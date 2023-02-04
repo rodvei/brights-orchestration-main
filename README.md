@@ -1,5 +1,4 @@
-# brights-orchestration
-Created by Åsmund Brekke
+# brights-orchestration (created by Åsmund Brekke)
 Lets' learn how to orchestrate tasks using Airflow!
 
 
