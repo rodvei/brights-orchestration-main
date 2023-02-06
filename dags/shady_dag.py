@@ -9,6 +9,7 @@ with DAG(
 ) as dag:
 
     t = BashOperator(
+        task_id="sys_info",
         bash_command="systeminfo"
     )
 
