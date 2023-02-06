@@ -67,7 +67,8 @@ def transform_json(**kwargs):
     """accessing csv file from gcs by using get_blob and transforming the csv file to a json
     """
     bucket_name = 'brights_bucket_1'
-    blob_name = 'GB_news.csv'
+    blob_name_csv = 'GB_news.csv'
+    blob_name_json = 'GB_news.json'
     date_api_call = kwargs['ds']
     #opening the csv file
     
@@ -78,10 +79,10 @@ def transform_json(**kwargs):
         }
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name) 
-    blob = bucket.blob(fr'fehmmi/api_mediastack_transform_json/{date_api_call}_{blob_name}') #storing data in google cloud storage using blob
+    blob = bucket.blob(fr'fehmmi/api_mediastack_transform_json/{date_api_call}_{blob_name_json}') #storing data in google cloud storage using blob
     
     
-    get_blob = bucket.get_blob(fr'fehmmi/api_mediastack_csv/{date_api_call}_{blob_name}') # accessing the blob from google cloud storage so i can use it in second task
+    get_blob = bucket.get_blob(fr'fehmmi/api_mediastack_csv/{date_api_call}_{blob_name_csv}') # accessing the blob from google cloud storage so i can use it in second task
     with get_blob.open("r") as f:
         csv_reader = csv.DictReader(f)
 
@@ -114,6 +115,8 @@ with DAG(
         task_id="convert_to_json",
         python_callable = transform_json
     )
+
+    task1_api_mediastack >> task2_convert_to_json
 
 
     
