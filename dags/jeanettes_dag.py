@@ -67,4 +67,4 @@ with DAG(
         python_callable=test_second_run # This is the function that airflow will run 
     )
 
-run_task_1>>run_task_2
+    run_task_1>>run_task_2
