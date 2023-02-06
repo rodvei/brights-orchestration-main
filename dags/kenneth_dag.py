@@ -53,12 +53,10 @@ with DAG(
     dag_id="kenneth-dag",
     description="Get data about nearby sats capasity",
     default_args=default_args,
-    schedule_interval="0 16 * * 1-3", #None, @hourly, @weekly, @monthly, @yearly,...
+    schedule_interval="0 15-17 * * 1-3", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
     data_extraction = PythonOperator(
         task_id="data_extraction", # This controls what your task name is in the airflow UI 
         python_callable=get_data # This is the function that airflow will run 
     )
-
-
