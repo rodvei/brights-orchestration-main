@@ -24,23 +24,28 @@ def run(**kwargs):
     bucket_name = 'brights_bucket_1'
     dag_date = kwargs['ds']
     dag_time = datetime.datetime.now()
-    blob_name = f'random_jokes_DATE_{dag_date}TIME_{dag_time}.csv'
+    blob_name = f'dadjoke_plus_kanyequote_DATE_{dag_date}TIME_{dag_time}.csv'
 
-    url = "https://v2.jokeapi.dev/joke/Any?safe-mode"
-    res = requests.get(url)
-    res_data = res.json()
+    url_1 = "https://v2.jokeapi.dev/joke/Any?safe-mode"
+    res_1 = requests.get(url_1)
+    res_1_data = res_1.json()
 
-    print(res_data)
+    url_2 = "https://api.kanye.rest/"
+    res_1 = requests.get(url_2)
+    res_2_data = res_1.json()
+
+    print(res_1_data)
+    print(res_2_data)
 
     joke_list = []
     header = ['timepoint', 'joke']
 
     joke_list.append(dag_time)
 
-    if res_data['type'] == 'twopart':
-        joke_list.append(f"{res_data['setup']} {res_data['delivery']}")
-    elif res_data['type'] == 'onepart':
-        joke_list.append(res_data['joke'])
+    if res_1_data['type'] == 'twopart':
+        joke_list.append(f"Dad: {res_1_data['setup']} {res_1_data['delivery']}. Kanye: {res_2_data}")
+    elif res_1_data['type'] == 'onepart':
+        joke_list.append(f"Dad: {res_1_data['joke']}. Kanye: {res_2_data}")
 
     print(joke_list)
 
@@ -60,20 +65,13 @@ def run(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="random_joke_dag_1",
+    dag_id="dad_kanye_exchange",
     description="This is our first test dag",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
     run_python_task = PythonOperator(
-        task_id="random_joke_task", # This controls what your task name is in the airflow UI 
+        task_id="dad_kanye_exchange_task", # This controls what your task name is in the airflow UI 
         python_callable=run # This is the function that airflow will run 
     )
-
-    run_python_task_1 = PythonOperator(
-        task_id="random_joke_task_1", # This controls what your task name is in the airflow UI 
-        python_callable=run # This is the function that airflow will run 
-    )
-
-    run_python_task >> run_python_task_1
