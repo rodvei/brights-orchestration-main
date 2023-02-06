@@ -8,7 +8,7 @@ from airflow.operators.python import PythonOperator
 apikey = "acf08f2517abc3baa8e1608b66fcb52e"
 
 default_args = {
-    "owner": "Ozzyz",
+    "owner": "",
     "retries": 1,
     "retry_delay": datetime.timedelta(minutes=5),
     "start_date": datetime.datetime(2023, 1, 1),
@@ -25,7 +25,7 @@ def api_call():
 
     response = requests.get("http://api.mediastack.com/v1/news", params=params).json()
     
-    print("hello world")
+    print(response)
     
 with DAG(
     "fehmmi-dag",
