@@ -2,7 +2,7 @@ import datetime
 import csv
 import requests
 import os
-
+from google.cloud import storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
@@ -24,9 +24,9 @@ def get_planets(date):
         payload_data = payload.json()   
         planet_list.append(payload_data)
         for rows in payload_data:
-            planet_list.append(rows)
-    client = storage.Client()
-    bucket = client.bucket(bucket_name)
+            planet_list.append(rows)    
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join(f'preparation_test_folder/pal', blob_name))
 
     with blob.open("w") as f:
