@@ -36,5 +36,5 @@ with DAG(
 ) as dag:
     run_planet_task = PythonOperator(
         task_id = "show_uranus",
-        python_callable = get_planets()
+        python_callable = get_planets
     )
