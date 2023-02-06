@@ -43,7 +43,7 @@ def get_api_data():
 	"X-RapidAPI-Key": "5159d08578msha1641dfe82c9f26p1bd992jsn45e198531a33",
 	"X-RapidAPI-Host": "free-to-play-games-database.p.rapidapi.com"
     }
-    response = requests.request("GET", url, headers=headers, params=querystring)
+    response = requests.request("GET", url, headers=headers, params=querystring).json()
     return response
 
 def transform_api_data(api_data):
@@ -54,9 +54,9 @@ def transform_api_data(api_data):
         del d['freetogame_profile_url']
     return api_data
 
-def save_to_csv(processed_data):
+def save_to_csv(processed_data, date):
     bucket_name = 'brights_bucket_1'
-    blob_name = 'mats_test.csv'
+    blob_name = f'mats_{date}.csv'
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('mats_preparation_test_folder', blob_name))
@@ -65,10 +65,11 @@ def save_to_csv(processed_data):
         writer.writeheader()
         writer.writerows(processed_data)
 
-def run():
+def run(**kwargs):
+    dag_date = kwargs['ds']
     api_data = get_api_data()
     processed_data = transform_api_data(api_data)
-    save_to_csv(processed_data)
+    save_to_csv(processed_data, dag_date)
 
 with DAG(
     dag_id="mats_api",
