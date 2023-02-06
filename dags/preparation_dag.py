@@ -9,8 +9,9 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 
 BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'preparation_test_folder/test1.csv'
-BQ_DATASET_NAME = 'brights-orchestration'
-BQ_TABLE_NAME = 'preperation_dag'
+BQ_PROJECT = 'brights-orchestration'
+BQ_DATASET_NAME = 'preperation_dag'
+BQ_TABLE_NAME = 'weather_data'
 
 
 default_args = {
@@ -72,11 +73,11 @@ with DAG(
         task_id="load_csv_gcs_to_bq", # This controls what your task name is in the airflow UI 
         bucket=BUCKET_NAME, # This is the function that airflow will run 
         source_objects=[BLOB_STAGING_PATH],
-        destination_project_dataset_table=f"{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
         schema_fields=[
             {'name': 'time_point', 'type': 'STRING', 'mode': 'REQUIRED'},
             {'name': 'cloudcover', 'type': 'INT64', 'mode': 'NULLABLE'}],
         write_disposition='WRITE_TRUNCATE'
     )
 
-task_get_data_from_api>>task_csv_load
+    task_get_data_from_api>>task_csv_load
