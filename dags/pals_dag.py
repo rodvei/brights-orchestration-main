@@ -13,6 +13,9 @@ default_args = {
 def first_task():
     print("hei drime velkommen")
 
+def second_task():
+    print("dette blir en flott dag!")
+
 with DAG(
     "pals_first_dag",
     default_args=default_args,
@@ -22,4 +25,8 @@ with DAG(
     run_python_task = PythonOperator(
         task_id="si_velkommen", # This controls what your task name is in the airflow UI 
         python_callable=first_task # This is the function that airflow will run 
+    )
+    run_second_python_task = PythonOperator(
+        task_id="fin_dag", 
+        python_callable=second_task 
     )
