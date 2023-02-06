@@ -43,7 +43,7 @@ def get_api_data():
 	"X-RapidAPI-Key": "5159d08578msha1641dfe82c9f26p1bd992jsn45e198531a33",
 	"X-RapidAPI-Host": "free-to-play-games-database.p.rapidapi.com"
     }
-    response = requests.request("GET", url, headers=headers, params=querystring)
+    response = requests.request("GET", url, headers=headers, params=querystring).json()
     return response
 
 def transform_api_data(api_data):
