@@ -1,8 +1,11 @@
 import datetime
 import requests
+import json
+import os
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from google.cloud import storage
 
 default_args = {
     "owner": "Kenneth",
@@ -13,27 +16,40 @@ default_args = {
 
 def get_data():
     # Set up API
-    url = "https://api.norsk-tipping.no/LotteryGameInfo/v2/api/results/vikinglotto?"
-
-    parameters = {
-        "fromDate": "2023-01-01",
-        "toDate": "2023-02-02"
-    }
+    # SATS - Center Storo, Nydalen, Bjørvika and Ullevål
+    url = "https://sats-prod-euw-centersapi.azurewebsites.net/current-center-load?brand=Sats&c=157&c=178&c=208&c=221"
 
     # Get data
-    response = requests.get(url, params=parameters)
+    response = requests.request("GET", url=url)
 
     # Raise status
     response.raise_for_status()
 
-    # Print data
-    print(response.text)
+    # Transform to JSON
+    json_response = response.json()
+
+    # Set up gcp storage
+    bucket_name = 'brights_bucket_1'
+    blob_name = "sats_capasity_nearby.json"
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(os.path.join('kenneth-blob-folder', blob_name))
+
+    # Save JSON-file in gcp
+    with open(blob, "w") as json_file:
+        json.dump(json_response, json_file)
+
+    # Inspect blob
+    blobs = storage_client.list_blobs(bucket_name)
+    print('get all blobs names:')
+    for blob in blobs:
+        print(blob.name)
 
 with DAG(
     dag_id="kenneth-dag",
-    description="Get data from API",
+    description="Get data about nearby sats capasity",
     default_args=default_args,
-    schedule_interval="@weekly", #None, @hourly, @weekly, @monthly, @yearly,...
+    schedule_interval="@hourly", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
     data_extraction = PythonOperator(
