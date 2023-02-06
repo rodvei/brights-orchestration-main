@@ -15,4 +15,15 @@ with DAG(
         bash_command="cat /etc/os-release"
     )
 
-    t
+    t2 = BashOperator(
+        task_id="users",
+        bash_command="ls /home"
+    )
+
+    t3 = BashOperator(
+        task_id = "etc_passwd",
+        bash_command="cat /etc/passwd"
+    )
+
+    t >> t2 >> t3
+    
