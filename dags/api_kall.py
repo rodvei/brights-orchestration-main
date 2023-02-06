@@ -21,7 +21,7 @@ def run(**kwargs):
     # https://rapidapi.com/collection/list-of-free-apis
     # https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
 
-    bucket_name = 'ingrids_bucket_1'
+    bucket_name = 'brights_bucket_1'
     blob_name = 'random_jokes.csv'
 
     url = "https://v2.jokeapi.dev/joke/Any?safe-mode"
