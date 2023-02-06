@@ -13,7 +13,7 @@ default_args = {
     "start_date": dt.datetime(2023, 2, 5),
 }
 
-def run():
+def run(**kwargs):
     bucket_name = 'brights_bucket_1'
     today = dt.datetime.today()
     date = f"{today.day}.{today.month}.{today.year}"
@@ -36,6 +36,10 @@ def run():
 
         for text in data:
             writer.writerow(text)
+
+    for key, value in kwargs:
+        print(f"Key: {key}")
+        print(f"Value: {value}")
 
     blobs = storage_client.list_blobs(bucket_name)
     print('get all blobs names:')
