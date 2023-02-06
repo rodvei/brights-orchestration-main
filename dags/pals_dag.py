@@ -30,7 +30,7 @@ def get_planets(date):
     blob = bucket.blob(os.path.join(f'preparation_test_folder/pal', blob_name))
 
     with blob.open("w") as f:
-        writer = csv.DictWriter(f, fieldnames=planet_list[0][0], lineterminator="\n")
+        writer = csv.DictWriter(f, fieldnames=planet_list[0][0].keys(), lineterminator="\n")
         writer.writeheader()
         for i in range(len(planet_list)):
             writer.writerows(planet_list[i])
