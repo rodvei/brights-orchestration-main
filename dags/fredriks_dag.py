@@ -37,6 +37,12 @@ def get_date_fact(**kwargs):
     print('get all blobs names:')
     for blob in blobs:
         print(blob.name)
+    return res_data
+
+res_data = get_date_fact()
+
+def print_file():
+    print(res_data)
 
 
 with DAG(
@@ -49,3 +55,5 @@ with DAG(
         task_id="bonjour_le_monde", # This controls what your task name is in the airflow UI 
         python_callable=get_date_fact # This is the function that airflow will run 
     )
+
+get_date_fact >> print_file
