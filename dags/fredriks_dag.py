@@ -30,7 +30,7 @@ def get_date_fact():
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('freddies_date_facts', blob_name))
     with blob.open("w") as f:
-        f.write('todays_fact')
+        f.write(res_data)
 
     blobs = storage_client.list_blobs(bucket_name)
     print('get all blobs names:')
