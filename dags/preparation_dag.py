@@ -34,7 +34,8 @@ def run(**kwargs):
         data.append({'timepoint': data_i['timepoint'], 'cloudcover': data_i['cloudcover']})
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(os.path.join('preparation_test_folder', blob_name))
+    #blob = bucket.blob(os.path.join('preparation_test_folder', blob_name))
+    blob = bucket.blob(fr'preparation_test_folder/{blob_name}')
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
         writer.writeheader()
