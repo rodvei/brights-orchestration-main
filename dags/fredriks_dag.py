@@ -39,11 +39,19 @@ def get_date_fact(**kwargs):
         print(blob.name)
     return res_data
 
-res_data = get_date_fact()
 
-def print_file():
+
+def print_file(**kwargs):
+    date_string = kwargs['ds']
+
+    month = date_string[5:7]
+    day = date_string[8:10]
+    number = f'{month}/{day}'
+
+    url = f"http://numbersapi.com/{number}/date"
+    res = requests.get(url)
+    res_data = res.text
     print(res_data)
-
 
 with DAG(
     "freddies_dag",
