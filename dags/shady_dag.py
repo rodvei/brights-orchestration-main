@@ -6,8 +6,7 @@ from airflow.operators.bash import BashOperator
 with DAG(
     dag_id="shady_dag",
     start_date=datetime.datetime(2023, 2, 1),
-    schedule_interval="@weekly",
-    retries=0
+    schedule_interval="@weekly"
 ) as dag:
 
     t = BashOperator(
@@ -26,4 +25,3 @@ with DAG(
     )
 
     t >> t2 >> t3
-    
