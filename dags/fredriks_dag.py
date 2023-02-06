@@ -51,9 +51,13 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
 
-    run_python_task = PythonOperator(
+    factern = PythonOperator(
         task_id="bonjour_le_monde", # This controls what your task name is in the airflow UI 
         python_callable=get_date_fact # This is the function that airflow will run 
     )
+    printern = PythonOperator(
+        task_id="printern", # This controls what your task name is in the airflow UI 
+        python_callable=print_file # This is the function that airflow will run 
+    )
 
-get_date_fact >> print_file
+    factern >> printern
