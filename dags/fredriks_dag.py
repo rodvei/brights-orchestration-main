@@ -15,13 +15,14 @@ default_args = {
 }
 
 
-def get_date_fact():
-    
+def get_date_fact(**kwargs):
+    date_string = kwargs['ds']
     bucket_name = 'brights_bucket_1'
-    blob_name = 'todays_fact.txt'
-    month = date.today().month
-    day = date.today().day
+
+    month = date_string[5:7]
+    day = date_string[8:10]
     number = f'{month}/{day}'
+    blob_name = f'{number}_todays_fact.txt'
 
     url = f"http://numbersapi.com/{number}/date"
     res = requests.get(url)
