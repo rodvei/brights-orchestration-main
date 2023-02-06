@@ -31,7 +31,7 @@ def run(**kwargs):
     data = []
     header = ['timepoint', 'cloudcover']
     for data_i in res_data['dataseries']:
-        data.append([data_i['timepoint'], data_i['cloudcover']])
+        data.append({'timepoint': data_i['timepoint'], 'cloudcover': data_i['cloudcover']})
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('preparation_test_folder', blob_name))
