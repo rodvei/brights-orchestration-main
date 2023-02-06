@@ -10,7 +10,7 @@ import datetime
 from google.cloud import storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.providers.papermill.operators.papermill import PapermillOperator
+#from airflow.providers.papermill.operators.papermill import PapermillOperator
 
 
 # # define dag
