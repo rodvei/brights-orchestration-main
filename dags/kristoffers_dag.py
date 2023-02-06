@@ -13,6 +13,9 @@ default_args = {
 def my_first_task():
     print('hello world')
 
+def my_second_task():
+    print('Test of second task')
+
 with DAG(
     "kristoffers_dag",
     default_args=default_args,
@@ -22,3 +25,9 @@ with DAG(
         task_id="hello_world", # This controls what your task name is in the airflow UI 
         python_callable=my_first_task # This is the function that airflow will run 
     )
+    second_task = PythonOperator(
+        task_id="second_task", # This controls what your task name is in the airflow UI 
+        python_callable=my_second_task # This is the function that airflow will run 
+    )
+
+hello_world>>second_task
