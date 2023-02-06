@@ -11,17 +11,6 @@ with DAG(
 
     t = BashOperator(
         task_id="sys_info",
-        bash_command="cat /etc/os-release"
+        bash_command="echo hello world!"
     )
-
-    t2 = BashOperator(
-        task_id="users",
-        bash_command="ls /home"
-    )
-
-    t3 = BashOperator(
-        task_id = "etc_passwd",
-        bash_command="cat /etc/passwd"
-    )
-
-    t >> t2 >> t3
+    t
