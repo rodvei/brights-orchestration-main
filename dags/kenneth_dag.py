@@ -29,8 +29,12 @@ def get_data():
     json_response = response.json()
 
     # Set up gcp storage
+    dt_now = datetime.datetime.now()
+    current_time = dt_now.strftime("%H:%M:%S")
+    current_date = dt_now.date()
+
     bucket_name = 'brights_bucket_1'
-    blob_name = "sats_capasity_nearby.json"
+    blob_name = f"sats_capasity_{current_date}_{current_time}.json"
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('kenneth-blob-folder', blob_name))
@@ -49,7 +53,7 @@ with DAG(
     dag_id="kenneth-dag",
     description="Get data about nearby sats capasity",
     default_args=default_args,
-    schedule_interval="@hourly", #None, @hourly, @weekly, @monthly, @yearly,...
+    schedule_interval="*/30_10-12,14-16_*_*_1-3", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
     data_extraction = PythonOperator(
