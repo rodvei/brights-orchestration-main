@@ -36,8 +36,8 @@ def get_data():
     blob = bucket.blob(os.path.join('kenneth-blob-folder', blob_name))
 
     # Save JSON-file in gcp
-    with open(blob, "w") as json_file:
-        json.dump(json_response, json_file)
+    with blob.open("w") as fp:
+        json.dump(json_response, fp)
 
     # Inspect blob
     blobs = storage_client.list_blobs(bucket_name)
