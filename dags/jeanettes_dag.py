@@ -46,13 +46,25 @@ def run(**kwargs):
     for blob in blobs:
         print(blob.name)
 
+def test_second_run(**kwargs):
+    print("This is second run")
+    for key, value in kwargs.items():
+        print(f"Key: {key}")
+        print(f"Value: {value}")
+
 with DAG(
     "jeanette_dag",
     default_args=default_args,
     schedule_interval="@daily",
 ) as dag:
 
-    run_python_task = PythonOperator(
-        task_id="run_some_python_task", # This controls what your task name is in the airflow UI 
+    run_task_1 = PythonOperator(
+        task_id="run_task_1", # This controls what your task name is in the airflow UI 
         python_callable=run # This is the function that airflow will run 
     )
+    run_task_2 = PythonOperator(
+        task_id="run_task_2", # This controls what your task name is in the airflow UI 
+        python_callable=test_second_run # This is the function that airflow will run 
+    )
+
+run_task_1>>run_task_2
