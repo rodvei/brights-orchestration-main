@@ -16,8 +16,13 @@ default_args = {
 def run(**kwargs):
     bucket_name = 'brights_bucket_1'
     blob_name = 'mats_test.csv'
-    url = r"https://free-to-play-games-database.p.rapidapi.com/api/filter"
-    response = requests.get(url)
+    url = "https://free-to-play-games-database.p.rapidapi.com/api/filter"
+    querystring = {"tag":"3d.mmorpg.fantasy.pvp","platform":"pc"}
+    headers = {
+	"X-RapidAPI-Key": "5159d08578msha1641dfe82c9f26p1bd992jsn45e198531a33",
+	"X-RapidAPI-Host": "free-to-play-games-database.p.rapidapi.com"
+    }
+    response = requests.request("GET", url, headers=headers, params=querystring).json()
     response_data = response.json()
     for d in response_data:
         del d['thumbnail']
