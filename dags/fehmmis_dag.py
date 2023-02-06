@@ -34,16 +34,17 @@ def api_call():
     
     return response
 
-def transform_data():
+def transform_data(**kwargs):
     """getting out relevant information from json and then writing a csv file
     """
     api_connection = api_call()
 
     bucket_name = 'brights_bucket_1'
     blob_name = 'GB_news.csv'
+    date_api_call = kwargs['ds']
 
     my_dict = []
-    header = ['data', 'author', 'source','category', 'url']
+    header = ['author', 'source','category', 'url']
 
     for data in api_connection['data']:
         author = data['author']
@@ -55,16 +56,22 @@ def transform_data():
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name) 
 
-    blob = bucket.blob(fr'fehmmi/{blob_name}')
+    blob = bucket.blob(fr'fehmmi/{date_api_call}_{blob_name}') #storing data in google cloud storage using blob
+    get_blob = bucket.get_blob(fr'fehmmi/{date_api_call}_{blob_name}') # accessing the blob from google cloud storage so i can use it in second task
+    
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
         writer.writeheader()
         writer.writerows(my_dict)
 
-    blobs = storage_client.lost_blobs(bucket_name)
-    print('get all blobs names:')
-    for blob in blobs:
-        print(blob.name)
+def transform_json():
+    print("this is a test")
+
+
+    # blobs = storage_client.lost_blobs(bucket_name)
+    # print('get all blobs names:')
+    # for blob in blobs:
+    #     print(blob.name)
    
     
 
@@ -75,9 +82,14 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
 
-    run_python_task = PythonOperator(
-        task_id="api_call", # This controls what your task name is in the airflow UI 
+    task1_api_mediastack = PythonOperator(
+        task_id="api_mediastack.com", # This controls what your task name is in the airflow UI 
         python_callable=transform_data # This is the function that airflow will run 
+    )
+
+    task2_convert_to_json = PythonOperator(
+        task_id="convert_to_json",
+        python_callable = transform_json
     )
 
 
