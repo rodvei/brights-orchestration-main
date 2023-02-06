@@ -4,7 +4,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 
 default_args = {
-    "owner": "Ozzyz",
+    "owner": "GlenRoger",
     "retries": 1,
     "retry_delay": datetime.timedelta(minutes=5),
     "start_date": datetime.datetime(2022, 8, 21),
@@ -13,16 +13,20 @@ default_args = {
 
 def run(**kwargs):
     # This function will be called by airflow, specified by python_callable in teh PythonOperator
-    # kwargs['ds']
     print(kwargs)
 
+def howdy_world(**kwargs):
+    print("Howdy World!")
+    print(kwargs.keys())
+
 with DAG(
-    "example_dag",
+    dag_id ="gr_test_dag",
+    description="This is gr's first test dag",
     default_args=default_args,
     schedule_interval="@daily",
 ) as dag:
 
     run_python_task = PythonOperator(
-        task_id="run_some_python_task", # This controls what your task name is in the airflow UI 
-        python_callable=run # This is the function that airflow will run 
+        task_id="gr_howdy_world", # This controls what your task name is in the airflow UI 
+        python_callable=howdy_world # This is the function that airflow will run 
     )
