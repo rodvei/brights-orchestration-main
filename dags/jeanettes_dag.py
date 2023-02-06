@@ -13,13 +13,13 @@ default_args = {
     "start_date": dt.datetime(2023, 2, 5),
 }
 
-def run():
+def run(**kwargs):
     bucket_name = 'brights_bucket_1'
     today = dt.datetime.today()
     date = f"{today.day}.{today.month}.{today.year}"
     day = today.day
     month = today.month
-    blob_name = f'date_fact{month}/{day}.csv'
+    blob_name = f'date_fact{month}_{day}.csv'
     url = f"http://numbersapi.com/{month}/{day}/date"
     res = requests.get(url)
     data = []
@@ -29,18 +29,28 @@ def run():
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('jeanette_folder', blob_name))
 
-    with open(f'{date}.csv', "w", newline='') as file:
+    with blob.open("w") as file:
         header = ['date', 'text']
-        writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore')
+        writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore', lineterminator="\n")
         writer.writeheader()
 
         for text in data:
             writer.writerow(text)
 
+    for key, value in kwargs.items():
+        print(f"Key: {key}")
+        print(f"Value: {value}")
+
     blobs = storage_client.list_blobs(bucket_name)
     print('get all blobs names:')
     for blob in blobs:
         print(blob.name)
+
+def test_second_run(**kwargs):
+    print("This is second run")
+    for key, value in kwargs.items():
+        print(f"Key: {key}")
+        print(f"Value: {value}")
 
 with DAG(
     "jeanette_dag",
@@ -48,7 +58,13 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
 
-    run_python_task = PythonOperator(
-        task_id="run_some_python_task", # This controls what your task name is in the airflow UI 
+    run_task_1 = PythonOperator(
+        task_id="run_task_1", # This controls what your task name is in the airflow UI 
         python_callable=run # This is the function that airflow will run 
     )
+    run_task_2 = PythonOperator(
+        task_id="run_task_2", # This controls what your task name is in the airflow UI 
+        python_callable=test_second_run # This is the function that airflow will run 
+    )
+
+    run_task_1>>run_task_2

@@ -5,11 +5,12 @@ from airflow.operators.bash import BashOperator
 
 with DAG(
     dag_id="shady_dag",
-    start_date=datetime.datetime(2023, 2, 1)
+    start_date=datetime.datetime(2023, 2, 1),
+    schedule_interval="@weekly"
 ) as dag:
 
     t = BashOperator(
-        bash_command="systeminfo"
+        task_id="sys_info",
+        bash_command="echo hello world!"
     )
-
     t
