@@ -13,6 +13,7 @@ default_args = {
 
 def run(**kwargs):
     # This function will be called by airflow, specified by python_callable in teh PythonOperator
+    # kwargs['ds']
     print(kwargs)
 
 with DAG(
