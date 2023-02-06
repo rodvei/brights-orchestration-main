@@ -76,7 +76,7 @@ def get_released_games(**kwargs):
 
         storage_client = storage.Client()
         bucket = storage_client.bucket(bucket_name)
-        blob = bucket.blob(os.path.join(fr'glenroger_test_folder/{blob_name}')
+        blob = bucket.blob(os.path.join(fr'glenroger_test_folder/{blob_name}'))
 
 
         with blob.open('w') as f:  # You will need 'wb' mode in Python 2.x
