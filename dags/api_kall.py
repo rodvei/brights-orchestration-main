@@ -22,7 +22,9 @@ def run(**kwargs):
     # https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
 
     bucket_name = 'brights_bucket_1'
-    blob_name = 'random_jokes.csv'
+    dag_date = kwargs['ds']
+    dag_time = datetime.datetime.now()
+    blob_name = f'random_jokes_DATE_{dag_date}TIME_{dag_time}.csv'
 
     url = "https://v2.jokeapi.dev/joke/Any?safe-mode"
     res = requests.get(url)
@@ -31,7 +33,9 @@ def run(**kwargs):
     print(res_data)
 
     joke_list = []
-    header = ['joke']
+    header = ['timepoint', 'joke']
+
+    joke_list.append(dag_time)
 
     if res_data['type'] == 'twopart':
         joke_list.append(f"{res_data['setup']} {res_data['delivery']}")
@@ -42,7 +46,7 @@ def run(**kwargs):
 
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(os.path.join('preparation_test_folder', blob_name))
+    blob = bucket.blob(os.path.join('ingrids_folder', blob_name))
 
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
@@ -56,7 +60,7 @@ def run(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="random_joke_dag",
+    dag_id="random_joke_dag_1",
     description="This is our first test dag",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
@@ -66,3 +70,10 @@ with DAG(
         task_id="random_joke_task", # This controls what your task name is in the airflow UI 
         python_callable=run # This is the function that airflow will run 
     )
+
+    run_python_task_1 = PythonOperator(
+        task_id="random_joke_task_1", # This controls what your task name is in the airflow UI 
+        python_callable=run # This is the function that airflow will run 
+    )
+
+    run_python_task >> run_python_task_1
