@@ -16,7 +16,7 @@ def bonjour_le_monde():
     print('Bonjour le monde!')
 
 with DAG(
-    "example_dag",
+    "freddies_dag",
     default_args=default_args,
     schedule_interval="@daily",
 ) as dag:
