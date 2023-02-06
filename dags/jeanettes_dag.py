@@ -37,7 +37,7 @@ def run(**kwargs):
         for text in data:
             writer.writerow(text)
 
-    for key, value in kwargs:
+    for key, value in kwargs.items():
         print(f"Key: {key}")
         print(f"Value: {value}")
 
