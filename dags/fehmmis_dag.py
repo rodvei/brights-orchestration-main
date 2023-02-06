@@ -17,6 +17,10 @@ default_args = {
     "start_date": datetime.datetime(2023, 1, 1),
 }
 
+def api_call_date(**kwargs):
+    date_api = kwargs['ds']
+    return date_api
+
 
 def api_call():
     params = {
@@ -56,6 +60,11 @@ def transform_data():
         writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
         writer.writeheader()
         writer.writerows(data)
+
+    blobs = storage_client.lost_blobs(bucket_name)
+    print('get all blobs names:')
+    for blob in blobs:
+        print(blob.name)
    
     
 
