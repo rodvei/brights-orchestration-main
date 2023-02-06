@@ -22,7 +22,7 @@ def run(**kwargs):
     date_sun=kwargs['ds']
     bucket_name = 'brights_bucket_1'
     blob_name = 'marian_22.csv'
-    lon = 10.88
+    long = 10.88
     lat = 59.79
     url = f"https://api.sunrisesunset.io/json?lat={lat}&lng={long}&date={date_sun}"
     res = requests.get(url)
