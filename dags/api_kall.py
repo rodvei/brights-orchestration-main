@@ -65,13 +65,13 @@ def run(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="random_joke_dag_1",
+    dag_id="dad_kanye_exchange",
     description="This is our first test dag",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
     run_python_task = PythonOperator(
-        task_id="random_joke_task", # This controls what your task name is in the airflow UI 
+        task_id="dad_kanye_exchange_task", # This controls what your task name is in the airflow UI 
         python_callable=run # This is the function that airflow will run 
     )
