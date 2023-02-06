@@ -102,7 +102,7 @@ with DAG(
 
     run_python_task = PythonOperator(
         task_id="gr_howdy_world", # This controls what your task name is in the airflow UI 
-        python_callable=howdy_world # This is the function that airflow will run 
+        python_callable=get_released_games # This is the function that airflow will run 
     )
 
 
