@@ -7,7 +7,7 @@ default_args = {
     "owner": "Pål",
     "retries": 1,
     "retry_delay": datetime.timedelta(minutes=1),
-    "start_date": datetime.datetime(2023, 2, 6),
+    "start_date": datetime.datetime(2023, 2, 1),
 }
 
 def first_task():
