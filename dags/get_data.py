@@ -18,7 +18,6 @@ data.append({'date': file_name, 'text': res.text})
 #storage_client = storage.Client()
 #bucket = storage_client.bucket(bucket_name)
 #blob = bucket.blob(os.path.join('preparation_test_folder', blob_name))
-header = ['date, text']
 with open(f'{file_name}.csv', "w", newline='') as file:
     header = ['date', 'text']
     writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore')
