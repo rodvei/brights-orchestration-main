@@ -19,6 +19,6 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
     hello_world = PythonOperator(
-        task_id="hello world", # This controls what your task name is in the airflow UI 
+        task_id="hello_world", # This controls what your task name is in the airflow UI 
         python_callable=my_first_task # This is the function that airflow will run 
     )
