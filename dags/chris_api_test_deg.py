@@ -44,7 +44,7 @@ def save_exchange_rate():
 
 
 with DAG(
-    dag_id="USD to EURO exchange rate",
+    dag_id="USD_to_EURO_exchange_rate",
     description="Gets the number og Euro 1 USD can buy",
     default_args=default_args,
     schedule_interval="*/5 * * * *", #None, @hourly, @weekly, @monthly, @yearly,...
