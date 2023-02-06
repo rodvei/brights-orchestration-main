@@ -19,6 +19,6 @@ with DAG(
 ) as dag:
 
     run_crying = PythonOperator(
-        task_id="øl grining", # This controls what your task name is in the airflow UI 
+        task_id="øl_grining", # This controls what your task name is in the airflow UI 
         python_callable=cry # This is the function that airflow will run 
     )
