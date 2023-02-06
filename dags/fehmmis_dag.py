@@ -13,7 +13,7 @@ apikey = "acf08f2517abc3baa8e1608b66fcb52e"
 default_args = {
     "owner": "Fehmmi",
     "retries": 1,
-    "retry_delay": datetime.timedelta(minutes=5),
+    "retry_delay": datetime.timedelta(minutes=1),
     "start_date": datetime.datetime(2023, 1, 1),
 }
 
@@ -43,7 +43,7 @@ def transform_data():
     blob_name = 'GB_news.csv'
 
     my_dict = []
-    header = ['data', 'author', 'source','category']
+    header = ['data', 'author', 'source','category', 'url']
 
     for data in api_connection['data']:
         author = data['author']
@@ -59,7 +59,7 @@ def transform_data():
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(data)
+        writer.writerows(my_dict)
 
     blobs = storage_client.lost_blobs(bucket_name)
     print('get all blobs names:')
