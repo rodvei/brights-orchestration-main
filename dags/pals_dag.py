@@ -1,4 +1,7 @@
 import datetime
+import csv
+import requests
+import os
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -10,25 +13,28 @@ default_args = {
     "start_date": datetime.datetime(2023, 2, 1),
 }
 
-def first_task():
-    print("hei drime velkommen")
-
-def second_task():
-    print("dette blir en flott dag!")
+def get_planets():
+    bucket_name = 'brights_bucket_1'
+    blob_name = 'uranus_planet.csv'
+    url = f'https://api.api-ninjas.com/v1/planets?name=uranus'
+    payload = requests.get(url, payload = requests.get(url, headers={'X-API-Key': 'IfBN/09mgUEHE4M+UdDYkw==VojvtoSTfSBFpOug'}))
+    payload_data = payload.json()
+    planet_list = []
+    for rows in payload_data:
+        planet_list.append(rows)
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(os.path.join(f'preparation_test_folder/pal', blob_name))
+    with blob.open("w") as f:
+        writer = csv.DictWriter(f, lineterminator="\n")
+        writer.writerows(planet_list)
 
 with DAG(
     "pals_first_dag",
     default_args=default_args,
     schedule_interval="@daily",
 ) as dag:
-
-    run_python_task = PythonOperator(
-        task_id="si_velkommen", # This controls what your task name is in the airflow UI 
-        python_callable=first_task # This is the function that airflow will run 
+    run_planet_task = PythonOperator(
+        task_id = "show_uranus",
+        python_callable = get_planets
     )
-    run_second_python_task = PythonOperator(
-        task_id="fin_dag", 
-        python_callable=second_task 
-    )
-
-run_python_task >> run_second_python_task
