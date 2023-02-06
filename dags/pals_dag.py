@@ -33,7 +33,7 @@ def get_planets(date):
         writer = csv.DictWriter(f, fieldnames=planet_list[0][0].keys(), lineterminator="\n")
         writer.writeheader()
         for i in range(len(planet_list)):
-            writer.writerows(planet_list[i])
+            writer.writerow(planet_list[i])
 
 def run(**kwargs):
     run_date = kwargs['ds']
