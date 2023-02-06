@@ -22,20 +22,25 @@ def run():
     blob_name = f'date_fact{month}/{day}.csv'
     url = f"http://numbersapi.com/{month}/{day}/date"
     res = requests.get(url)
-    type(res)
-    type(res.text)
     data = []
-    header = ['timepoint', 'cloudcover']
+    header = ['date', 'text']
     data.append({'date': date, 'text': res.text})
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('jeanette_folder', blob_name))
-    header = ['date, text']
-    with blob.open("w") as f:
-        writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(data)
 
+    with open(f'{date}.csv', "w", newline='') as file:
+        header = ['date', 'text']
+        writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore')
+        writer.writeheader()
+
+        for text in data:
+            writer.writerow(text)
+
+    blobs = storage_client.list_blobs(bucket_name)
+    print('get all blobs names:')
+    for blob in blobs:
+        print(blob.name)
 
 with DAG(
     "jeanette_dag",
