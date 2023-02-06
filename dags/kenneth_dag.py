@@ -53,7 +53,7 @@ with DAG(
     dag_id="kenneth-dag",
     description="Get data about nearby sats capasity",
     default_args=default_args,
-    schedule_interval="*/30 10-12,14-16 * * 1-3", #None, @hourly, @weekly, @monthly, @yearly,...
+    schedule_interval="0 16 * * 1-3", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
     data_extraction = PythonOperator(
