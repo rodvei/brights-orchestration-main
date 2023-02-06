@@ -30,3 +30,5 @@ with DAG(
         task_id="fin_dag", 
         python_callable=second_task 
     )
+
+run_python_task >> run_second_python_task
