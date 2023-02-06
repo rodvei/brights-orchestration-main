@@ -10,7 +10,7 @@ with DAG(
 
     t = BashOperator(
         task_id="sys_info",
-        bash_command="systeminfo"
+        bash_command="cat /etc/os-release"
     )
 
     t
