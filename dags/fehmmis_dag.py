@@ -43,7 +43,7 @@ def transform_data():
     blob_name = 'GB_news.csv'
 
     my_dict = []
-    header = ['data', 'author', 'source','category']
+    header = ['data', 'author', 'source','category', 'url']
 
     for data in api_connection['data']:
         author = data['author']
