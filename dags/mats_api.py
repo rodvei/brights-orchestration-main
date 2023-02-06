@@ -23,8 +23,7 @@ def run(**kwargs):
 	"X-RapidAPI-Host": "free-to-play-games-database.p.rapidapi.com"
     }
     response = requests.request("GET", url, headers=headers, params=querystring)
-    response_data = response.json()
-    for d in response_data:
+    for d in response:
         del d['thumbnail']
         del d['game_url']
         del d['short_description']
@@ -33,9 +32,9 @@ def run(**kwargs):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('mats_preparation_test_folder', blob_name))
     with blob.open("w") as f:
-        writer = csv.DictWriter(f, fieldnames=response_data[0].keys(), lineterminator="\n")
+        writer = csv.DictWriter(f, fieldnames=response[0].keys(), lineterminator="\n")
         writer.writeheader()
-        writer.writerows(response_data)
+        writer.writerows(response)
 
 with DAG(
     dag_id="mats_api",
