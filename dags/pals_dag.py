@@ -10,7 +10,7 @@ default_args = {
     "owner": "Pål",
     "retries": 1,
     "retry_delay": datetime.timedelta(minutes=1),
-    "start_date": datetime.datetime(2023, 2, 1),
+    "start_date": datetime.datetime(2023, 2, 4),
 }
 
 def get_planets():
@@ -28,6 +28,8 @@ def get_planets():
     with blob.open("w") as f:
         writer = csv.DictWriter(f, lineterminator="\n")
         writer.writerows(planet_list)
+
+    print(planet_list)
 
 with DAG(
     "pals_first_dag",
