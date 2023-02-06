@@ -13,7 +13,7 @@ default_args = {
     "start_date": datetime.datetime(2023, 2, 4),
 }
 
-def get_planets(date):
+def get_planets(date, **kwargs):
     bucket_name = 'brights_bucket_1'
     blob_name = f'{date}_planet_list.csv'
     planets = ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune']
@@ -27,13 +27,12 @@ def get_planets(date):
             planet_list.append(rows)    
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(os.path.join(f'preparation_test_folder/pal', blob_name))
+    blob = bucket.blob(os.path.join(f'pals_test_folder', blob_name))
 
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=planet_list[0][0].keys(), lineterminator="\n")
         writer.writeheader()
-        for i in range(len(planet_list)):
-            writer.writerow(planet_list[i])
+        writer.writerows(planet_list)
 
 def run(**kwargs):
     run_date = kwargs['ds']
