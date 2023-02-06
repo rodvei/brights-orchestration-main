@@ -19,7 +19,7 @@ def run():
     date = f"{today.day}.{today.month}.{today.year}"
     day = today.day
     month = today.month
-    blob_name = f'date_fact{month}/{day}.csv'
+    blob_name = f'date_fact{month}_{day}.csv'
     url = f"http://numbersapi.com/{month}/{day}/date"
     res = requests.get(url)
     data = []
@@ -29,9 +29,9 @@ def run():
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('jeanette_folder', blob_name))
 
-    with open(f'{date}.csv', "w", newline='') as file:
+    with blob.open("w") as file:
         header = ['date', 'text']
-        writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore')
+        writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore', lineterminator="\n")
         writer.writeheader()
 
         for text in data:
