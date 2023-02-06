@@ -1,3 +1,5 @@
+import os
+import csv
 import datetime
 import requests
 from google.cloud import storage
@@ -19,6 +21,7 @@ def run(**kwargs):
     # https://rapidapi.com/collection/list-of-free-apis
     # https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
     bucket_name = 'brights_bucket_1'
+    blob_name = 'test1.csv'
     lon = 10.757933
     lat = 59.911491
     url = f"https://www.7timer.info/bin/astro.php?lon={lon}&lat={lat}&ac=0&unit=metric&output=json&tzshift=0"
@@ -30,6 +33,13 @@ def run(**kwargs):
     for data_i in res_data['dataseries']:
         data.append([data_i['timepoint'], data_i['cloudcover']])
     storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(os.path.join('preparation_test_folder', blob_name))
+    with blob.open("w") as f:
+        writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
+        writer.writeheader()
+        writer.writerows(data)
+    
     blobs = storage_client.list_blobs(bucket_name)
     print('get all blobs names:')
     for blob in blobs:
