@@ -35,6 +35,12 @@ def run(**kwargs):
 def get_released_games(**kwargs):
 
     release_date = kwargs['ds']  #Inneholder dateon vi skal kjøre spørringen
+
+    #Apparently we get strings from kwargs, need to convert to proper
+    #date-format.
+    release_date = datetime.strptime(release_date, "%Y-%m-%d")
+    release_date = datetime.date(release_date)
+
     release_date = release_date - timedelta(days=1)
 
     url = f"https://api.rawg.io/api/games?key=fd484827b3dd46a2b26ae6fce116905a&dates={release_date},{release_date}"
