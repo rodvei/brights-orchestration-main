@@ -80,7 +80,7 @@ def transform(**kwargs):
     elif joke_data['type'] == 'onepart':
         joke_quote_dict['dad_kanye_exchange'] = f"Dad: {joke_data['joke']}. Kanye: {quote_data}"
 
-    dump_to_blob(joke_quote_dict, 'dad_kanye_exchange')
+    dump_to_blob(joke_quote_dict, 'dad_kanye_exchange', dag_date)
 
 
 def load(**kwargs):
