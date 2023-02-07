@@ -77,8 +77,10 @@ with DAG(
         task_id="load_csv_gcs_to_bq", # This controls what your task name is in the airflow UI 
         bucket=BUCKET_NAME, # This is the function that airflow will run 
         source_objects=[BLOB_STAGING_PATH],
-        destination_project_dataset_table=f"{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
         create_disposition ='CREATE_IF_NEEDED',
+        write_disposition='WRITE_TRUNCATE',
+        autodetect=True,
         schema_fields=[
             {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
             {'name': 'sunrise', 'type': 'STRING', 'mode': 'NULLABLE'},
@@ -87,8 +89,9 @@ with DAG(
             {'name': 'last_light', 'type': 'STRING', 'mode': 'NULLABLE'},
             {'name': 'day_length', 'type': 'INT64', 'mode': 'NULLABLE'},
             ],
-        write_disposition='WRITE_TRUNCATE'
+    
         #'date', 'sunrise', 'sunset', 'first_light', 'last_light', 'day_length']
     )
 
 run_python_task>>task_csv_load
+
