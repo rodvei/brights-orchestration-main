@@ -11,9 +11,9 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 DAYS = [1,2,3,4,5,6,7,8,9,10]
 MONTHS = [1,2,3,4,5,6,7,8,9,10]
 BUCKET_NAME = 'brights_bucket_1'
-BLOB_STAGING_PATH = 'jeanette_folder'
+BLOB_STAGING_PATH = 'date_fact2_6.csv'
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'jeanettes_dataset'
+BQ_DATASET_NAME = 'brights_datasets'
 BQ_TABLE_NAME = 'text_every_day'
 
 default_args = {
@@ -75,7 +75,7 @@ with DAG(
         source_format='csv',
         create_disposition='CREATE_IF_NEEDED',
         write_disposition='WRITE_TRUNCATE',
-        bigquery_conn_id='bq-conn',
+        bigquery_conn_id='gcp-conn',
         google_cloud_storage_conn_id='gcp-conn',
         autodetect=True, # This uses autodetect
         schema_fields=[
