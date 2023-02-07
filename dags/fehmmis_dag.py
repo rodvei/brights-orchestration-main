@@ -120,12 +120,12 @@ with DAG(
         destination_project_dataset_table = f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
         source_format = 'NEWLINE_DELIMITED_JSON',
         schema_fields = [
-            {'name': 'author', 'type': 'STRING', 'mode': 'NULLABLE'}
-            {'name': 'source', 'type': 'STRING', 'mode': 'NULLABLE'}
-            {'name': 'category', 'type': 'STRING', 'mode': 'NULLABLE'}
+            {'name': 'author', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'source', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'category', 'type': 'STRING', 'mode': 'NULLABLE'},
             {'name': 'url', 'type': 'STRING', 'mode': 'NULLABLE'}
-        ]
-
+        ],
+        write_disposition='WRITE_TRUNCATE'
     )
 
     task1_api_mediastack >> task2_convert_to_json >> task3_api_media
