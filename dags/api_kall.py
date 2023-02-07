@@ -85,7 +85,7 @@ def transform(**kwargs):
 
 def load(**kwargs):
     dag_date = kwargs['ds']
-    blob_name = f'API_results_{dag_date}.json'
+    blob_name = f'dad_kanye_exchange_{dag_date}.json'
     dad_kanye_exchange_dict = load_from_blob(blob_name)
     
     headers = ['dad_kanye_exchange']
@@ -109,7 +109,7 @@ def load(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="dad_kanye_exchange_8",
+    dag_id="dad_kanye_exchange_9",
     description="Dad tells a joke and Kanye answers with a statement that makes sense to him",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
