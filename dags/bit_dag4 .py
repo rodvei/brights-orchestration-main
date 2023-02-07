@@ -55,7 +55,7 @@ def run(**kwargs):
 with DAG(
     dag_id="sunrise_dag",
     default_args=default_args,
-    schedule_interval="@daily",
+    schedule_interval="@hourly",
 ) as dag:
 
     run_python_task = PythonOperator(
