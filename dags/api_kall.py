@@ -16,9 +16,7 @@ default_args = {
 
 #brights_bucket_1/preparation_test_folder
 
-def dump_to_blob(API_res, filename, **kwargs):
-    dag_date = kwargs['ds']
-
+def dump_to_blob(API_res, filename, dag_date):
     bucket_name = 'brights_bucket_1'
     blob_name = f'{filename}_{dag_date}.json'
     storage_client = storage.Client()
@@ -63,7 +61,8 @@ def extract(**kwargs):
     API_res_dict['joke_API'] = joke_data
     API_res_dict['quote_API'] = quote_data
 
-    dump_to_blob(API_res_dict, 'API_results')
+    dag_date = kwargs['ds']
+    dump_to_blob(API_res_dict, 'API_results', dag_date)
     
 
 def transform(**kwargs):
