@@ -11,7 +11,7 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 DAYS = [1,2,3,4,5,6,7,8,9,10]
 MONTHS = [1,2,3,4,5,6,7,8,9,10]
 BUCKET_NAME = 'brights_bucket_1'
-BLOB_STAGING_PATH = 'date_fact2_6.csv'
+BLOB_STAGING_PATH = 'jeanette_folder/date_fact2_6.csv'
 BQ_PROJECT = 'brights-orchestration'
 BQ_DATASET_NAME = 'brights_datasets'
 BQ_TABLE_NAME = 'jeanette_table'
