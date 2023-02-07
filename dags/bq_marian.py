@@ -10,7 +10,7 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'marian_test_folder/marian_22.csv'
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'bq_marian'
+BQ_DATASET_NAME = 'brights_datasets'
 BQ_TABLE_NAME = 'marian_table'
 
 default_args = {
@@ -86,7 +86,7 @@ with DAG(
             {'name': 'sunrise', 'type': 'STRING', 'mode': 'NULLABLE'},
             {'name': 'sunset', 'type': 'STRING', 'mode': 'NULLABLE'},
             {'name': 'first_light', 'type': 'STRING', 'mode': 'NULLABLE'},
-            {'name': 'last_light', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'last_light', 'type': 'INT64', 'mode': 'NULLABLE'},
             {'name': 'day_length', 'type': 'INT64', 'mode': 'NULLABLE'},
             ],
     
