@@ -5,6 +5,13 @@ import requests
 from google.cloud import storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+
+BUCKET_NAME = 'brights_bucket_1'
+BLOB_STAGING_PATH = r'preparation_test_folder/games.csv'
+BQ_PROJECT = 'brights-orchestration'
+BQ_DATASET_NAME = 'mats_prep_dag'
+BQ_TABLE_NAME = 'games_data'
 
 default_args = {
     "owner": "Mats",
@@ -12,29 +19,6 @@ default_args = {
     "retry_delay": datetime.timedelta(minutes=5),
     "start_date": datetime.datetime(2023, 2, 4),
 }
-
-# def run(**kwargs):
-#     bucket_name = 'brights_bucket_1'
-#     blob_name = 'mats_test.csv'
-#     url = "https://free-to-play-games-database.p.rapidapi.com/api/filter"
-#     querystring = {"tag":"3d.mmorpg.fantasy.pvp","platform":"pc"}
-#     headers = {
-# 	"X-RapidAPI-Key": "5159d08578msha1641dfe82c9f26p1bd992jsn45e198531a33",
-# 	"X-RapidAPI-Host": "free-to-play-games-database.p.rapidapi.com"
-#     }
-#     response = requests.request("GET", url, headers=headers, params=querystring)
-#     for d in response:
-#         del d['thumbnail']
-#         del d['game_url']
-#         del d['short_description']
-#         del d['freetogame_profile_url']
-#     storage_client = storage.Client()
-#     bucket = storage_client.bucket(bucket_name)
-#     blob = bucket.blob(os.path.join('mats_preparation_test_folder', blob_name))
-#     with blob.open("w") as f:
-#         writer = csv.DictWriter(f, fieldnames=response[0].keys(), lineterminator="\n")
-#         writer.writeheader()
-#         writer.writerows(response)
 
 def get_api_data():
     url = "https://free-to-play-games-database.p.rapidapi.com/api/filter"
@@ -54,22 +38,21 @@ def transform_api_data(api_data):
         del d['freetogame_profile_url']
     return api_data
 
-def save_to_csv(processed_data, date):
+def save_to_csv(processed_data):
     bucket_name = 'brights_bucket_1'
-    blob_name = f'mats_{date}.csv'
     storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(os.path.join('mats_preparation_test_folder', blob_name))
+    bucket = storage_client.bucket(BUCKET_NAME)
+    blob = bucket.blob(BLOB_STAGING_PATH)
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=processed_data[0].keys(), lineterminator="\n")
         writer.writeheader()
         writer.writerows(processed_data)
 
-def run(**kwargs):
-    dag_date = kwargs['ds']
+def run():
+    # dag_date = kwargs['ds']
     api_data = get_api_data()
     processed_data = transform_api_data(api_data)
-    save_to_csv(processed_data, dag_date)
+    save_to_csv(processed_data)
 
 with DAG(
     dag_id="mats_api",
@@ -78,7 +61,25 @@ with DAG(
     schedule_interval="@daily", 
 ) as dag:
 
-    run_python_task = PythonOperator(
-        task_id="f2p_first_task", # This controls what your task name is in the airflow UI 
-        python_callable=run # This is the function that airflow will run 
+    run_all = PythonOperator(
+        task_id="f2p_run_task", 
+        python_callable=run 
     )
+
+    task_csv_load = GCSToBigQueryOperator(
+        task_id="load_csv_gcs_to_bq", 
+        bucket=BUCKET_NAME, 
+        source_objects=[BLOB_STAGING_PATH],
+        destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        create_disposition="CREATE_IF_NEEDED"
+        schema_fields=[
+            {'name': 'id', 'type': 'INT64', 'mode': 'REQUIRED'},
+            {'name': 'title', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'genre', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'platform', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'publisher', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'developer', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'release_date', 'type': 'STRING', 'mode': 'NULLABLE'}],
+        write_disposition='WRITE_TRUNCATE'
+    )
+
