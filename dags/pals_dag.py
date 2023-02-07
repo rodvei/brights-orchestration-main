@@ -22,14 +22,12 @@ def get_planets(date, **kwargs):
         url = f'https://api.api-ninjas.com/v1/planets?name={planet}'
         payload = requests.get(url, headers={'X-API-Key': 'IfBN/09mgUEHE4M+UdDYkw==VojvtoSTfSBFpOug'})
         payload_data = payload.json()   
-        planet_list.append(payload_data)
-        for rows in payload_data:
-            planet_list.append(rows)    
+        planet_list.append(payload_data[0])  
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join(f'pals_test_folder', blob_name))
 
-    headers = ['name', 'mass', 'radius', 'period', 'semi_major_axis', 'temperature', 'distance_light_year', 'host_star_mass', 'host_star_temperature']
+    headers = planet_list[0].keys()
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=headers, lineterminator="\n")
         writer.writeheader()
