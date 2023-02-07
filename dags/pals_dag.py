@@ -29,8 +29,9 @@ def get_planets(date, **kwargs):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join(f'pals_test_folder', blob_name))
 
+    headers = ['name', 'mass', 'radius', 'period', 'semi_major_axis', 'temperature', 'distance_light_year', 'host_star_mass', 'host_star_temperature']
     with blob.open("w") as f:
-        writer = csv.DictWriter(f, fieldnames=planet_list[0][0].keys(), lineterminator="\n")
+        writer = csv.DictWriter(f, fieldnames=headers, lineterminator="\n")
         writer.writeheader()
         writer.writerows(planet_list)
 
