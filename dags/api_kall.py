@@ -88,7 +88,7 @@ def load(**kwargs):
     blob_name = f'API_results_{dag_date}.json'
     dad_kanye_exchange_dict = load_from_blob(blob_name)
     
-    headers = ['joke']
+    headers = ['dad_kanye_exchange']
     joke_quote_list = [dad_kanye_exchange_dict]
 
     storage_client = storage.Client()
@@ -109,7 +109,7 @@ def load(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="dad_kanye_exchange_7",
+    dag_id="dad_kanye_exchange_8",
     description="Dad tells a joke and Kanye answers with a statement that makes sense to him",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
