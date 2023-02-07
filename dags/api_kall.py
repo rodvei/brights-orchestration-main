@@ -43,7 +43,7 @@ def load_from_blob(blob_name, **kwargs):
     blob = bucket.blob(os.path.join('ingrids_folder', blob_name))
 
     with blob.open("r") as infile:
-        blob_file = infile.read()
+        blob_file = json.load(infile)
 
     return blob_file
 
@@ -67,7 +67,7 @@ def extract_api(**kwargs):
     dump_to_blob(API_res_dict, 'API_results', **kwargs)
     
 
-def transform_to_csv(**kwargs):
+def transform(**kwargs):
     dag_date = kwargs['ds']
     dag_time = datetime.datetime.now()
     blob_name = f'API_results_DATE_{dag_date}TIME_{dag_time}.json'
