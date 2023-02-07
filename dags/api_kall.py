@@ -108,7 +108,7 @@ def load(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="dad_kanye_exchange_5",
+    dag_id="dad_kanye_exchange_6",
     description="Dad tells a joke and Kanye answers with a statement that makes sense to him",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
