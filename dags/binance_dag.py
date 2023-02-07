@@ -24,7 +24,7 @@ def add_days_klines_to_blob(ds=None, **kwargs):
     if not bucket.get_blob("binance/"):
         create_binance_blob(bucket)
 
-    date = datetime.date.fromisoformat(ds)
+    date = datetime.datetime.fromisoformat(ds)
     
     symbol = "BTCUSDT"
     interval = "1d"
