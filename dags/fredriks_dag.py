@@ -7,6 +7,7 @@ from datetime import date
 from google.cloud import storage
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 import json
+import csv
 
 default_args = {
     "owner": "freddie",
@@ -23,26 +24,34 @@ def get_date_fact(**kwargs):
     month = date_string[5:7]
     day = date_string[8:10]
     number = f'{month}/{day}'
-    blob_name = 'todays_fact.json'
+    blob_name = 'todays_fact.csv'
 
     url = f"http://numbersapi.com/{number}/date"
     res = requests.get(url)
     res_data = res.text
-    dick_t = {number: res_data}
-    
-    fact_json = json.dumps(dick_t)
-    fact_json = fact_json
+
     
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('freddies_date_facts', blob_name))
-    with blob.open("w") as f:
-        f.write(fact_json)
+
+
+    with blob.open("w") as file:
+        header = ['fact']
+        writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore', lineterminator="\n")
+        writer.writeheader()
+
+        for text in res_data:
+            print(text)
+            writer.writerow(text)
 
     blobs = storage_client.list_blobs(bucket_name)
     print('get all blobs names:')
     for blob in blobs:
         print(blob.name)
+
+
+
 
 
 
@@ -72,11 +81,11 @@ with DAG(
     GCS_factern = GCSToBigQueryOperator(
         task_id='get_date_fact',
         bucket='brights_bucket_1',
-        source_objects=['freddies_date_facts/todays_fact.json'],
+        source_objects=['freddies_date_facts/todays_fact.csv'],
         destination_project_dataset_table='brigths-orchestration.brights-datasets.fredrik_table',
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
-        source_format='NEWLINE_DELIMITED_JSON'
+        source_format='CSV'
     )
 
 
