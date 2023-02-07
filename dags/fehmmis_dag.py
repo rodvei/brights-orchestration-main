@@ -21,7 +21,7 @@ default_args = {
 bucket_name = 'brights_bucket_1'
 blob_name_csv = 'GB_news.csv'
 blob_name_json = 'GB_news.json'
-BLOB_STAGING_PATH = r'fehmmi/api_mediastack_transform_json/2023-02-07_GB_news.json'
+BLOB_STAGING_PATH = r'fehmmi/api_mediastack_csv//2023-02-07_GB_news.csv'
 BQ_PROJECT = 'brights-orchestration'
 BQ_DATASET_NAME = 'brights_datasets'
 BQ_TABLE_NAME = 'fehmmi_table'
@@ -110,7 +110,6 @@ with DAG(
         bucket = bucket_name,
         source_objects= [BLOB_STAGING_PATH],
         destination_project_dataset_table = f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
-        source_format = 'NEWLINE_DELIMITED_JSON',
         schema_fields = [
             {'name': 'author', 'type': 'STRING', 'mode': 'NULLABLE'},
             {'name': 'source', 'type': 'STRING', 'mode': 'NULLABLE'},
@@ -121,7 +120,8 @@ with DAG(
         
     )
 
-    task1_api_mediastack >> task2_convert_to_json >> task3_api_media
+    task1_api_mediastack >> task2_convert_to_json
+    task1_api_mediastack >> task3_api_media
 
 
     
