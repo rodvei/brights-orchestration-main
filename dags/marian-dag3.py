@@ -17,7 +17,7 @@ def run(**kwargs):
     # API Inspiration: 
     # https://rapidapi.com/collection/list-of-free-apis
     # https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
-    bucket_name = 'marians_bucket_2'
+    bucket_name = 'brights_bucket_1'
     blob_name = 'marian_blob.csv'
 
     url = f"https://v2.jokeapi.dev/joke/Any?safe-mode"
