@@ -31,6 +31,7 @@ def get_date_fact(**kwargs):
     dick_t = {number: res_data}
     
     fact_json = json.dumps(dick_t)
+    fact_json = [fact_json]
     
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
@@ -74,7 +75,8 @@ with DAG(
         source_objects=['freddies_date_facts/todays_fact.txt'],
         destination_project_dataset_table='brigths-orchestration.brights-datasets.fredrik_table',
         write_disposition='WRITE_TRUNCATE',
-        create_disposition='CREATE_IF_NEEDED'
+        create_disposition='CREATE_IF_NEEDED',
+        source_format='NEWLINE_DELIMITED_JSON'
     )
 
 
