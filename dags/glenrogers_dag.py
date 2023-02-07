@@ -14,7 +14,7 @@ BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'glenroger_test_folder/'
 BLOB_NAME = ""
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'brights_dataset'
+BQ_DATASET_NAME = 'brights_datasets'
 BQ_TABLE_NAME = 'glen_roger_table'
 
 
