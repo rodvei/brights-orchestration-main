@@ -10,7 +10,7 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'pals_test_folder/planets.csv'
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'planet_dag'
+BQ_DATASET_NAME = 'pal_test_dag'
 BQ_TABLE_NAME = 'planets'
 
 default_args = {
@@ -68,6 +68,7 @@ with DAG(
             {'name': 'distance_light_year', 'type': 'STRING', 'mode': 'REQUIRED'},
             {'name': 'host_star_mass', 'type': 'FLOAT', 'mode': 'REQUIRED'},
             {'name': 'host_star_temperature', 'type': 'FLOAT', 'mode': 'REQUIRED'}],
+        create_disposition ="CREATE_IF_NEEDED",
         write_disposition='WRITE_TRUNCATE'
     )
 
