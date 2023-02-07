@@ -34,7 +34,7 @@ def get_planets():
 def csv_writer(date, input_list):
     storage_client = storage.Client()
     bucket = storage_client.bucket(BUCKET_NAME)
-    blob = bucket.blob(os.path.join(f'pals_test_folder', BLOB_STAGING_PATH))
+    blob = bucket.blob(os.path.join(BLOB_STAGING_PATH))
     headers = input_list[0].keys()
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=headers, lineterminator="\n")
