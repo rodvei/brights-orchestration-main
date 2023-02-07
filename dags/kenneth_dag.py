@@ -33,6 +33,10 @@ def get_data():
     current_time = dt_now.strftime("%H:%M:%S")
     current_date = dt_now.date()
 
+    # Use kwargs["ds"] to retrieve date
+    # Add hour 
+
+
     bucket_name = 'brights_bucket_1'
     blob_name = f"sats_capasity_{current_date}_{current_time}.json"
     storage_client = storage.Client()
@@ -53,7 +57,7 @@ with DAG(
     dag_id="kenneth-dag",
     description="Get data about nearby sats capasity",
     default_args=default_args,
-    schedule_interval="0 15-17 * * 1-3", #None, @hourly, @weekly, @monthly, @yearly,...
+    schedule_interval="0 14-17 * * 1-3", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
     data_extraction = PythonOperator(
