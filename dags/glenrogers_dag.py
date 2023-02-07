@@ -1,8 +1,9 @@
-import datetime
+
 import requests
 import json
 import os
 import csv
+from datetime import datetime, timedelta
 from google.cloud import storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -32,7 +33,8 @@ def run(**kwargs):
 def get_released_games(**kwargs):
 
     release_date = kwargs['ds']  #Inneholder dateon vi skal kjøre spørringen
-
+    release_date = release_date - timedelta(days=1)
+    
     url = f"https://api.rawg.io/api/games?key=fd484827b3dd46a2b26ae6fce116905a&dates={release_date},{release_date}"
 
     bucket_name = 'brights_bucket_1'
