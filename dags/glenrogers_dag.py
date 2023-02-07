@@ -14,8 +14,8 @@ BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'glenroger_test_folder/'
 BLOB_NAME = ""
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'preperation_gr_dag'
-BQ_TABLE_NAME = 'gr_game_data'
+BQ_DATASET_NAME = 'brights_dataset'
+BQ_TABLE_NAME = 'glen_roger_table'
 
 
 default_args = {
@@ -34,7 +34,7 @@ def get_released_games(**kwargs):
 
     release_date = kwargs['ds']  #Inneholder dateon vi skal kjøre spørringen
     release_date = release_date - timedelta(days=1)
-    
+
     url = f"https://api.rawg.io/api/games?key=fd484827b3dd46a2b26ae6fce116905a&dates={release_date},{release_date}"
 
     bucket_name = 'brights_bucket_1'
