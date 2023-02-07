@@ -70,15 +70,13 @@ def transform_json(**kwargs):
     """accessing csv file from gcs by using get_blob and transforming the csv file to a json
     """
     date_api_call = kwargs['ds']
-    #opening the csv file
-    
-    
     json_storage = []
 
 
     blob = bucket.blob(fr'fehmmi/api_mediastack_transform_json/{date_api_call}_{blob_name_json}') #storing data in google cloud storage using blob
     
     
+    #opening the csv file
     get_blob = bucket.get_blob(fr'fehmmi/api_mediastack_csv/{date_api_call}_{blob_name_csv}') # accessing the blob from google cloud storage so i can use it in second task
     with get_blob.open("r") as f:
         csv_reader = csv.DictReader(f)
@@ -87,14 +85,7 @@ def transform_json(**kwargs):
             json_storage.append(rows)
 
     with blob.open("w") as outfile:
-        json.dump(json_storage, outfile)
-
-    # blobs = storage_client.lost_blobs(bucket_name)
-    # print('get all blobs names:')
-    # for blob in blobs:
-    #     print(blob.name)
-   
-    
+        json.dump(json_storage, outfile)    
 
     
 with DAG(
@@ -112,21 +103,6 @@ with DAG(
         task_id="convert_to_json",
         python_callable = transform_json
     )
-
-    # task3_api_media =  GoogleCloudStorageToBigQueryOperator(
-    #     task_id = 'gcs_to_bq',
-    #     bucket = bucket_name,
-    #     source_objects= BLOB_STAGING_OBJECT,
-    #     destination_project_dataset_table = f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
-    #     source_formaqt = 'NEWLINE_DELIMITED_JSON',
-    #     schema_fields = [
-    #         {'name': 'author', 'type': 'STRING', 'mode': 'NULLABLE'},
-    #         {'name': 'source', 'type': 'STRING', 'mode': 'NULLABLE'},
-    #         {'name': 'category', 'type': 'STRING', 'mode': 'NULLABLE'},
-    #         {'name': 'url', 'type': 'STRING', 'mode': 'NULLABLE'}
-    #     ],
-    #     write_disposition='WRITE_TRUNCATE'
-    # )
 
     task1_api_mediastack >> task2_convert_to_json 
 
