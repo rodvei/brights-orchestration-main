@@ -14,7 +14,7 @@ BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = 'date_fact2_6.csv'
 BQ_PROJECT = 'brights-orchestration'
 BQ_DATASET_NAME = 'brights_datasets'
-BQ_TABLE_NAME = 'text_every_day'
+BQ_TABLE_NAME = 'jeanette_table'
 
 default_args = {
     "owner": "Jeanette",
