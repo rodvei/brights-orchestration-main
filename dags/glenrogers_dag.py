@@ -7,6 +7,16 @@ from google.cloud import storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+
+BUCKET_NAME = 'brights_bucket_1'
+BLOB_STAGING_PATH = r'glenroger_test_folder/'
+BLOB_NAME = ""
+BQ_PROJECT = 'brights-orchestration'
+BQ_DATASET_NAME = 'preperation_gr_dag'
+BQ_TABLE_NAME = 'gr_game_data'
+
+
 default_args = {
     "owner": "GlenRoger",
     "retries": 1,
@@ -26,6 +36,7 @@ def get_released_games(**kwargs):
     url = f"https://api.rawg.io/api/games?key=fd484827b3dd46a2b26ae6fce116905a&dates={release_date},{release_date}"
 
     bucket_name = 'brights_bucket_1'
+    BLOB_NAME = f'games_released_{release_date}.csv'
     blob_name = f'games_released_{release_date}.csv'
 
     resp = requests.get(url)
@@ -54,7 +65,8 @@ def get_released_games(**kwargs):
                 add_space = " "
             save_str_to_file += f"\t{add_space}{i+1}: {response['results'][i]['name']} / ("
 
-            game_dict_to_save['games'].append(response['results'][i]['name'])
+            # game_dict_to_save['games'].append(response['results'][i]['name'])
+            game_dict_to_save['games'].append(f"{response['results'][i]['name']};{response['results'][i]['id']}")
 
             if response['results'][i]['platforms'] != None:
                 for j in response['results'][i]['platforms']:
@@ -81,7 +93,7 @@ def get_released_games(**kwargs):
 
         with blob.open('w') as f:  # You will need 'wb' mode in Python 2.x
             
-            f.write('release_date;game\n')
+            f.write('release_date;game;game_id\n')
             for i in dict_to_save['games'][0]['games']:
                 line_to_write = f"{release_date};{i}\n"
                 f.write(line_to_write)            
@@ -105,6 +117,25 @@ with DAG(
         python_callable=get_released_games # This is the function that airflow will run 
     )
 
+
+
+    task_csv_load = GCSToBigQueryOperator(
+        task_id="load_games_csv_to_gsc", # This controls what your task name is in the airflow UI 
+        bucket=BUCKET_NAME, # This is the function that airflow will run 
+        source_objects=[BLOB_STAGING_PATH+BLOB_NAME],
+        create_disposition='CREATE_IF_NEEDED',
+        destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        schema_fields=[
+            {'date': 'release_date', 'type': 'STRING', 'mode': 'REQUIRED'},
+            {'name': 'game', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'game_id': 'game_id', 'type': 'STRING', 'mode': 'REQUIRED'}],
+        write_disposition='WRITE_TRUNCATE'
+    )
+
+run_python_task>>task_csv_load
+
+
+#til GCS,  
 
 if __name__ == "__main__":
     print("Hell-o!")
