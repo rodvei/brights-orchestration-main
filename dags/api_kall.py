@@ -85,7 +85,7 @@ def transform(**kwargs):
 
 def load(**kwargs):
     dag_date = kwargs['ds']
-    blob_name = f'dad_kanye_exchange_{dag_date}.csv'
+    blob_name = f'API_results_{dag_date}.json'
     dad_kanye_exchange_dict = load_from_blob(blob_name)
     
     headers = ['joke']
@@ -94,7 +94,8 @@ def load(**kwargs):
     storage_client = storage.Client()
     bucket_name = 'brights_bucket_1'
     bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(os.path.join('ingrids_folder', blob_name))
+    blob_name_new = f'dad_kanye_exchange_{dag_date}.csv'
+    blob = bucket.blob(os.path.join('ingrids_folder', blob_name_new))
 
     with blob.open("w") as outfile:
         writer = csv.DictWriter(outfile, fieldnames=headers, lineterminator="\n")
