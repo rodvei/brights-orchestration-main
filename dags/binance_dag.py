@@ -27,7 +27,7 @@ def add_days_klines_to_blob(ds=None, **kwargs):
     date = datetime.datetime.fromisoformat(ds)
     
     symbol = "BTCUSDT"
-    interval = "1d"
+    interval = "1h"
     startTime = date_to_ts(date - datetime.timedelta(days=1))
     
     klines = get_klines(
@@ -64,7 +64,7 @@ def add_days_klines_to_blob(ds=None, **kwargs):
 
 def get_klines(
     symbol: str = "BTCUSDT", 
-    interval:str = "1d", 
+    interval:str = "1h", 
     startTime:float=date_to_ts(datetime.datetime.now() - datetime.timedelta(days=1)) , 
     endTime:float=date_to_ts(datetime.datetime.now()), 
     limit:int = 6
