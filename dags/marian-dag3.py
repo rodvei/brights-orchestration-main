@@ -34,7 +34,7 @@ def run(**kwargs):
             data_dict['joke'] = data['joke']
         print(data_dict)
 
-    header = ['timepoint', 'cloudcover']
+    header = ['category', 'joke']
     data_new.append(data_dict)
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
