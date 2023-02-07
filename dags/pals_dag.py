@@ -70,3 +70,5 @@ with DAG(
             {'name': 'host_star_temperature', 'type': 'FLOAT', 'mode': 'REQUIRED'}],
         write_disposition='WRITE_TRUNCATE'
     )
+
+    run_planet_task>>task_csv_load
