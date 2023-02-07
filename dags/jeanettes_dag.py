@@ -66,18 +66,19 @@ with DAG(
         task_id="run_task_1", # This controls what your task name is in the airflow UI 
         python_callable=run # This is the function that airflow will run 
     )
+
     task_csv_load = GCSToBigQueryOperator(
         task_id="task_csv_load", 
         bucket=BUCKET_NAME,
         source_objects=[BLOB_STAGING_PATH],
         destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
-        source_format='csv'
+        source_format='csv',
         create_disposition='CREATE_ID_NEEDED',
         write_disposition='WRITE_TRUNCATE',
         bigquery_conn_id='bq-conn',
         google_cloud_storage_conn_id='gcp-conn',
         autodetect=True, # This uses autodetect
-        dag='jeanette_dag'
+        dag='jeanette_dag',
         schema_fields=[
             {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
             {'name': 'text', 'type': 'STRING', 'mode': 'NULLABLE'}]
