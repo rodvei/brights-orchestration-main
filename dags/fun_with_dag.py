@@ -11,7 +11,7 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = os.path.join('ingrids_folder', f'dad_kanye_exchange_2023-02-07.csv')
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'dad_kanye_exchange_w_table_1'
+BQ_DATASET_NAME = 'brights_datasets'
 BQ_TABLE_NAME = 'ingrid_table'
 
 default_args = {
@@ -116,7 +116,7 @@ def load(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="dad_kanye_exchange_10",
+    dag_id="dad_kanye_exchange_wtable_1",
     description="Dad tells a joke and Kanye answers with a statement that makes sense to him",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
