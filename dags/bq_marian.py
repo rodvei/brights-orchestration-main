@@ -11,7 +11,7 @@ BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'marian_test_folder/marian_22.csv'
 BQ_PROJECT = 'brights-orchestration'
 BQ_DATASET_NAME = 'bq_marian'
-BQ_TABLE_NAME = 'sunrise'
+BQ_TABLE_NAME = 'marian_table'
 
 default_args = {
     "owner": "Marian",
@@ -53,6 +53,10 @@ def run_from_api(**kwargs):
         writer.writeheader()
         writer.writerows(data)
     
+# header1= ['date', 'sunrise', 'sunset']
+# blob= bucket.blob(BLOB_STAGING_PATH)
+# with blob.open("r") as f1
+    
     # blobs = storage_client.list_blobs(bucket_name)
     # print('get all blobs names:')
     # for blob in blobs:
@@ -73,7 +77,7 @@ with DAG(
         task_id="load_csv_gcs_to_bq", # This controls what your task name is in the airflow UI 
         bucket=BUCKET_NAME, # This is the function that airflow will run 
         source_objects=[BLOB_STAGING_PATH],
-        destination_project_dataset_table=f"{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
         create_disposition ='CREATE_IF_NEEDED',
         schema_fields=[
             {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
