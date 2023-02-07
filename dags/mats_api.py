@@ -71,7 +71,7 @@ with DAG(
         bucket=BUCKET_NAME, 
         source_objects=[BLOB_STAGING_PATH],
         destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
-        create_disposition="CREATE_IF_NEEDED"
+        create_disposition="CREATE_IF_NEEDED",
         schema_fields=[
             {'name': 'id', 'type': 'INT64', 'mode': 'REQUIRED'},
             {'name': 'title', 'type': 'STRING', 'mode': 'NULLABLE'},
