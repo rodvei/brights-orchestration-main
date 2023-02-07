@@ -73,7 +73,7 @@ with DAG(
         source_objects=[BLOB_STAGING_PATH],
         destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
         source_format='csv',
-        create_disposition='CREATE_ID_NEEDED',
+        create_disposition='CREATE_IF_NEEDED',
         write_disposition='WRITE_TRUNCATE',
         bigquery_conn_id='bq-conn',
         google_cloud_storage_conn_id='gcp-conn',
