@@ -88,7 +88,7 @@ def load(**kwargs):
     blob_name = f'API_results_{dag_date}.json'
     dad_kanye_exchange_dict = load_from_blob(blob_name)
     
-    headers = ['joke']
+    headers = ['dad_kanye_exchange']
     joke_quote_list = [dad_kanye_exchange_dict]
 
     storage_client = storage.Client()
