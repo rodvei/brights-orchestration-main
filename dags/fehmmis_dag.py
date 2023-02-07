@@ -104,7 +104,7 @@ with DAG(
         python_callable = transform_json
     )
     
-    task3_api_media =  GoogleCloudStorageToBigQueryOperator(
+    task3_api_media =  GCSToBigQueryOperator(
         task_id = 'gcs_to_bq',
         bucket = bucket_name,
         source_objects= BLOB_STAGING_OBJECT,
