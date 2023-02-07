@@ -1,7 +1,7 @@
 import datetime
 import requests
 from airflow import DAG
-from airflow.operators.python import PythonOperator, GCSToBigQueryOperator
+from airflow.operators.python import PythonOperator
 import os
 from datetime import date
 from google.cloud import storage
