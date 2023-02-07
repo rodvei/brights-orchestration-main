@@ -78,7 +78,6 @@ with DAG(
         bigquery_conn_id='bq-conn',
         google_cloud_storage_conn_id='gcp-conn',
         autodetect=True, # This uses autodetect
-        dag='jeanette_dag',
         schema_fields=[
             {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
             {'name': 'text', 'type': 'STRING', 'mode': 'NULLABLE'}]
