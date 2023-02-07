@@ -38,7 +38,7 @@ def api_call():
     }
 
     response = requests.get("http://api.mediastack.com/v1/news", params=params).json()
-    with open("read_")
+    
     return response
 
 def transform_data(**kwargs):
