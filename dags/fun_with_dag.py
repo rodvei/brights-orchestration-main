@@ -12,7 +12,7 @@ BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = os.path.join('ingrids_folder', f'dad_kanye_exchange_2023-02-07.csv')
 BQ_PROJECT = 'brights-orchestration'
 BQ_DATASET_NAME = 'dad_kanye_exchange_w_table_1'
-BQ_TABLE_NAME = 'ingrids_table'
+BQ_TABLE_NAME = 'ingrid_table'
 
 default_args = {
     "owner": "Ingrid",
