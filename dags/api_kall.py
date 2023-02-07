@@ -76,9 +76,9 @@ def transform(**kwargs):
     joke_quote_dict = {}
 
     if joke_data['type'] == 'twopart':
-        joke_quote_dict['dad_kanye_exchange'] = f"Dad: {joke_data['setup']} {joke_data['delivery']}. Kanye: {quote_data}"
-    elif joke_data['type'] == 'onepart':
-        joke_quote_dict['dad_kanye_exchange'] = f"Dad: {joke_data['joke']}. Kanye: {quote_data}"
+        joke_quote_dict['dad_kanye_exchange'] = f"Dad: {joke_data['setup']} {joke_data['delivery']}. Kanye: {quote_data['quote']}"
+    elif joke_data['type'] == 'single':
+        joke_quote_dict['dad_kanye_exchange'] = f"Dad: {joke_data['joke']}. Kanye: {quote_data['quote']}"
 
     dump_to_blob(joke_quote_dict, 'dad_kanye_exchange', dag_date)
 
@@ -109,7 +109,7 @@ def load(**kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="dad_kanye_exchange_9",
+    dag_id="dad_kanye_exchange_10",
     description="Dad tells a joke and Kanye answers with a statement that makes sense to him",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
