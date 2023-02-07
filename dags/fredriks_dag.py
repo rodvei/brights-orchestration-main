@@ -29,6 +29,7 @@ def get_date_fact(**kwargs):
     url = f"http://numbersapi.com/{number}/date"
     res = requests.get(url)
     res_data = res.text
+    res_dict = [{'fact': res_data}]
 
     
     storage_client = storage.Client()
@@ -40,8 +41,8 @@ def get_date_fact(**kwargs):
         header = ['fact']
         writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore', lineterminator="\n")
         writer.writeheader()
-
-        writer.writerow(res_data)
+        for x in res_dict:    
+            writer.writerow(x)
 
     blobs = storage_client.list_blobs(bucket_name)
     print('get all blobs names:')
