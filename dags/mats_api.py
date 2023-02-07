@@ -83,3 +83,4 @@ with DAG(
         write_disposition='WRITE_TRUNCATE'
     )
 
+    run_all>>task_csv_load
