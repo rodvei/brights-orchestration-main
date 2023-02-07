@@ -81,7 +81,7 @@ with DAG(
         task_id='get_date_fact',
         bucket='brights_bucket_1',
         source_objects=['freddies_date_facts/todays_fact.csv'],
-        destination_project_dataset_table='brigths-orchestration.brights-datasets.fredrik_table',
+        destination_project_dataset_table='brights-orchestration.brights_datasets.fredrik_table',
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
         source_format='CSV',
