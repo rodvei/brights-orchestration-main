@@ -31,7 +31,7 @@ def get_date_fact(**kwargs):
     dick_t = {number: res_data}
     
     fact_json = json.dumps(dick_t)
-    fact_json = [fact_json]
+    fact_json = fact_json
     
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
