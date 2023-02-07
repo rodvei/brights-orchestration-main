@@ -2,7 +2,6 @@
 import requests
 import json
 import os
-import csv
 import datetime
 from datetime import datetime, timedelta
 from google.cloud import storage
