@@ -5,7 +5,6 @@ import requests
 from google.cloud import storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 
 default_args = {
     "owner": "Kristoffer",
