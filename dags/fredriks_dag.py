@@ -64,7 +64,7 @@ with DAG(
     factern = GCSToBigQueryOperator(
         task_id='get_date_fact',
         bucket='brights_bucket_1',
-        source_objects=['todays_fact.txt'],
+        source_objects=['freddies_date_facts/todays_fact.txt'],
         destination_project_dataset_table='brigths-orchestration.preperation_dag.freddies_pool_table',
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED'
