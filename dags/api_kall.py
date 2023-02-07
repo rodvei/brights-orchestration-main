@@ -118,19 +118,19 @@ with DAG(
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
 ) as dag:
 
-    run_python_task = PythonOperator(
+    run_python_task_1 = PythonOperator(
         task_id="extract_task", # This controls what your task name is in the airflow UI 
         python_callable=extract_api # This is the function that airflow will run 
     )
 
-    run_python_task = PythonOperator(
+    run_python_task_2 = PythonOperator(
         task_id="transform_task", # This controls what your task name is in the airflow UI 
         python_callable=transform_to_csv # This is the function that airflow will run 
     )
 
-    run_python_task = PythonOperator(
+    run_python_task_3 = PythonOperator(
         task_id="load_task", # This controls what your task name is in the airflow UI 
         python_callable=load_to_csv # This is the function that airflow will run 
     )
 
-    extract_api>>transform_to_csv>>load_to_csv
+    run_python_task_1>>run_python_task_2>>run_python_task_3
