@@ -17,9 +17,16 @@ default_args = {
     "start_date": datetime.datetime(2023, 1, 1),
 }
 
-def api_call_date(**kwargs):
-    date_api = kwargs['ds']
-    return date_api
+bucket_name = 'brights_bucket_1'
+blob_name_csv = 'GB_news.csv'
+blob_name_json = 'GB_news.json'
+BLOB_STAGING_OBJECT = r'fehmmi/api_mediastack_transform_json/2023-02-06_GB_news.json'
+BQ_PROJECT = 'brights-orchestration'
+BQ_DATASET_NAME = 'brights_datasets'
+BQ_TABLE_NAME = 'fehmmi_table'
+
+storage_client = storage.Client()
+bucket = storage_client.bucket(bucket_name) 
 
 
 def api_call():
@@ -31,7 +38,7 @@ def api_call():
     }
 
     response = requests.get("http://api.mediastack.com/v1/news", params=params).json()
-    
+    with open("read_")
     return response
 
 def transform_data(**kwargs):
@@ -39,8 +46,6 @@ def transform_data(**kwargs):
     """
     api_connection = api_call()
 
-    bucket_name = 'brights_bucket_1'
-    blob_name = 'GB_news.csv'
     date_api_call = kwargs['ds']
 
     my_dict = []
@@ -53,10 +58,8 @@ def transform_data(**kwargs):
         url = data['url']
         my_dict.append({'author': author, 'source': source, 'category': category, 'url': url})
     # print(my_dict)   
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name) 
 
-    blob = bucket.blob(fr'fehmmi/api_mediastack_csv/{date_api_call}_{blob_name}') #storing data in google cloud storage using blob
+    blob = bucket.blob(fr'fehmmi/api_mediastack_csv/{date_api_call}_{blob_name_csv}') #storing data in google cloud storage using blob
     
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=header, lineterminator="\n")
@@ -66,19 +69,13 @@ def transform_data(**kwargs):
 def transform_json(**kwargs):
     """accessing csv file from gcs by using get_blob and transforming the csv file to a json
     """
-    bucket_name = 'brights_bucket_1'
-    blob_name_csv = 'GB_news.csv'
-    blob_name_json = 'GB_news.json'
     date_api_call = kwargs['ds']
     #opening the csv file
     
     
-    json_storage = {
-        "data": [],
-        "api_call_date": date_api_call
-        }
-    storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name) 
+    json_storage = []
+
+
     blob = bucket.blob(fr'fehmmi/api_mediastack_transform_json/{date_api_call}_{blob_name_json}') #storing data in google cloud storage using blob
     
     
@@ -87,7 +84,7 @@ def transform_json(**kwargs):
         csv_reader = csv.DictReader(f)
 
         for rows in csv_reader:
-            json_storage['data'].append(rows)
+            json_storage.append(rows)
 
     with blob.open("w") as outfile:
         json.dump(json_storage, outfile)
@@ -116,7 +113,22 @@ with DAG(
         python_callable = transform_json
     )
 
-    task1_api_mediastack >> task2_convert_to_json
+    task3_api_media =  GoogleCloudStorageToBigQueryOperator(
+        task_id = 'gcs_to_bq',
+        bucket = bucket_name,
+        source_objects= BLOB_STAGING_OBJECT,
+        destination_project_dataset_table = f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        source_format = 'NEWLINE_DELIMITED_JSON',
+        schema_fields = [
+            {'name': 'author', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'source', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'category', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'url', 'type': 'STRING', 'mode': 'NULLABLE'}
+        ],
+        write_disposition='WRITE_TRUNCATE'
+    )
+
+    task1_api_mediastack >> task2_convert_to_json >> task3_api_media
 
 
     
