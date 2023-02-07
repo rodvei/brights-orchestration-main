@@ -2,9 +2,19 @@ import datetime as dt
 import requests
 import csv
 import os
-from google.cloud import storage
+import random
+from google.cloud import storage, bigquery
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
+
+DAYS = [1,2,3,4,5,6,7,8,9,10]
+MONTHS = [1,2,3,4,5,6,7,8,9,10]
+BUCKET_NAME = 'brights_bucket_1'
+BLOB_STAGING_PATH = 'jeanette_folder'
+BQ_PROJECT = 'brights-orchestration'
+BQ_DATASET_NAME = 'jeanettes_dataset'
+BQ_TABLE_NAME = 'text_every_day'
 
 default_args = {
     "owner": "Jeanette",
@@ -14,19 +24,18 @@ default_args = {
 }
 
 def run(**kwargs):
-    bucket_name = 'brights_bucket_1'
-    today = dt.datetime.today()
-    date = f"{today.day}.{today.month}.{today.year}"
-    day = today.day
-    month = today.month
-    blob_name = f'date_fact{month}_{day}.csv'
+    dag_date = kwargs["ds_nodash"]
+    # today = dt.datetime.today()
+    day = random.choice(DAYS)
+    month = random.choice(DAYS)
+    blob_name = f'{dag_date}fact_text{day}{month}.csv'
     url = f"http://numbersapi.com/{month}/{day}/date"
     res = requests.get(url)
     data = []
     header = ['date', 'text']
-    data.append({'date': date, 'text': res.text})
+    data.append({'date': dag_date, 'text': res.text})
     storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
+    bucket = storage_client.bucket(BUCKET_NAME)
     blob = bucket.blob(os.path.join('jeanette_folder', blob_name))
 
     with blob.open("w") as file:
@@ -37,34 +46,41 @@ def run(**kwargs):
         for text in data:
             writer.writerow(text)
 
-    for key, value in kwargs.items():
-        print(f"Key: {key}")
-        print(f"Value: {value}")
+    # for key, value in kwargs.items():
+    #     print(f"Key: {key}")
+    #     print(f"Value: {value}")
 
-    blobs = storage_client.list_blobs(bucket_name)
+    blobs = storage_client.list_blobs(BUCKET_NAME)
     print('get all blobs names:')
     for blob in blobs:
         print(blob.name)
 
-def test_second_run(**kwargs):
-    print("This is second run")
-    for key, value in kwargs.items():
-        print(f"Key: {key}")
-        print(f"Value: {value}")
 
 with DAG(
     "jeanette_dag",
     default_args=default_args,
-    schedule_interval="@daily",
+    schedule_interval="*/15 * * * *"
 ) as dag:
 
     run_task_1 = PythonOperator(
         task_id="run_task_1", # This controls what your task name is in the airflow UI 
         python_callable=run # This is the function that airflow will run 
     )
-    run_task_2 = PythonOperator(
-        task_id="run_task_2", # This controls what your task name is in the airflow UI 
-        python_callable=test_second_run # This is the function that airflow will run 
+    task_csv_load = GCSToBigQueryOperator(
+        task_id="task_csv_load", 
+        bucket=BUCKET_NAME,
+        source_objects=[BLOB_STAGING_PATH],
+        destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        source_format='csv'
+        create_disposition='CREATE_ID_NEEDED',
+        write_disposition='WRITE_TRUNCATE',
+        bigquery_conn_id='bq-conn',
+        google_cloud_storage_conn_id='gcp-conn',
+        autodetect=True, # This uses autodetect
+        dag='jeanette_dag'
+        schema_fields=[
+            {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
+            {'name': 'text', 'type': 'STRING', 'mode': 'NULLABLE'}]
     )
 
-    run_task_1>>run_task_2
+    run_task_1>>task_csv_load
