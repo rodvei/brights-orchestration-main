@@ -125,7 +125,7 @@ with DAG(
 
     run_python_task_2 = PythonOperator(
         task_id="transform_task", # This controls what your task name is in the airflow UI 
-        python_callable=transform_to_csv # This is the function that airflow will run 
+        python_callable=transform # This is the function that airflow will run 
     )
 
     run_python_task_3 = PythonOperator(
