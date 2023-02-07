@@ -41,9 +41,7 @@ def get_date_fact(**kwargs):
         writer = csv.DictWriter(file, fieldnames=header, extrasaction='ignore', lineterminator="\n")
         writer.writeheader()
 
-        for text in res_data:
-            print(text)
-            writer.writerow(text)
+        writer.writerow(res_data)
 
     blobs = storage_client.list_blobs(bucket_name)
     print('get all blobs names:')
