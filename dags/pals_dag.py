@@ -10,8 +10,8 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'pals_test_folder/planets.csv'
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'pal_test_dag'
-BQ_TABLE_NAME = 'planets'
+BQ_DATASET_NAME = 'brights_datasets'
+BQ_TABLE_NAME = 'paal_table'
 
 default_args = {
     "owner": "Pål",
@@ -20,29 +20,32 @@ default_args = {
     "start_date": datetime.datetime(2023, 2, 4),
 }
 
-def get_planets(date, **kwargs):
-    bucket_name = 'brights_bucket_1'
-    blob_name = f'{date}_planet_list.csv'
+def get_planets():
     planets = ['mercury','venus','earth','mars','jupiter','saturn','uranus','neptune']
     planet_list = []
     for planet in planets:
         url = f'https://api.api-ninjas.com/v1/planets?name={planet}'
         payload = requests.get(url, headers={'X-API-Key': 'IfBN/09mgUEHE4M+UdDYkw==VojvtoSTfSBFpOug'})
         payload_data = payload.json()   
-        planet_list.append(payload_data[0])  
+        planet_list.append(payload_data[0]) 
+    return planet_list 
+
+
+def csv_writer(date, input_list):
     storage_client = storage.Client()
     bucket = storage_client.bucket(BUCKET_NAME)
     blob = bucket.blob(os.path.join(f'pals_test_folder', BLOB_STAGING_PATH))
-
-    headers = planet_list[0].keys()
+    headers = input_list[0].keys()
     with blob.open("w") as f:
         writer = csv.DictWriter(f, fieldnames=headers, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(planet_list)
+        writer.writerows(input_list)
 
 def run(**kwargs):
     run_date = kwargs['ds']
-    get_planets(run_date)
+    output_list = get_planets()
+    csv_writer(run_date, output_list)
+
 
 with DAG(
     "pals_first_dag",
