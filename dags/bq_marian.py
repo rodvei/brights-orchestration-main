@@ -70,21 +70,21 @@ with DAG(
         python_callable=run_from_api # This is the function that airflow will run 
     )
     task_csv_load = GCSToBigQueryOperator(
-    task_id="load_csv_gcs_to_bq", # This controls what your task name is in the airflow UI 
-    bucket=BUCKET_NAME, # This is the function that airflow will run 
-    source_objects=[BLOB_STAGING_PATH],
-    destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
-    create_disposition ='CREATE_IF_NEEDED',
-    schema_fields=[
-        {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
-        {'name': 'sunrise', 'type': 'STRING', 'mode': 'NULLABLE'},
-        {'name': 'sunset', 'type': 'STRING', 'mode': 'NULLABLE'},
-        {'name': 'first_light', 'type': 'STRING', 'mode': 'NULLABLE'},
-        {'name': 'last_light', 'type': 'STRING', 'mode': 'NULLABLE'},
-        {'name': 'day_length', 'type': 'INT64', 'mode': 'NULLABLE'},
-        ],
-    write_disposition='WRITE_TRUNCATE'
-    #'date', 'sunrise', 'sunset', 'first_light', 'last_light', 'day_length']
-)
+        task_id="load_csv_gcs_to_bq", # This controls what your task name is in the airflow UI 
+        bucket=BUCKET_NAME, # This is the function that airflow will run 
+        source_objects=[BLOB_STAGING_PATH],
+        destination_project_dataset_table=f"{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+        create_disposition ='CREATE_IF_NEEDED',
+        schema_fields=[
+            {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
+            {'name': 'sunrise', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'sunset', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'first_light', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'last_light', 'type': 'STRING', 'mode': 'NULLABLE'},
+            {'name': 'day_length', 'type': 'INT64', 'mode': 'NULLABLE'},
+            ],
+        write_disposition='WRITE_TRUNCATE'
+        #'date', 'sunrise', 'sunset', 'first_light', 'last_light', 'day_length']
+    )
 
 run_python_task>>task_csv_load
