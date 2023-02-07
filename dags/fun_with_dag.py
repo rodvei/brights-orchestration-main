@@ -9,7 +9,7 @@ from airflow.operators.python import PythonOperator
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 
 BUCKET_NAME = 'brights_bucket_1'
-BLOB_STAGING_PATH = os.path.join('ingrids_folder', f'dad_kanye_exchange_2023-02-07.csv')
+BLOB_STAGING_PATH = os.path.join('ingrids_folder', f'dad_kanye_exchange_2023-02-06.csv')
 BQ_PROJECT = 'brights-orchestration'
 BQ_DATASET_NAME = 'brights_datasets'
 BQ_TABLE_NAME = 'ingrid_table'
