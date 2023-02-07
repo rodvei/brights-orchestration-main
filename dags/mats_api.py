@@ -10,8 +10,8 @@ from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQue
 BUCKET_NAME = 'brights_bucket_1'
 BLOB_STAGING_PATH = r'preparation_test_folder/games.csv'
 BQ_PROJECT = 'brights-orchestration'
-BQ_DATASET_NAME = 'mats_prep_dag'
-BQ_TABLE_NAME = 'games_data'
+BQ_DATASET_NAME = 'brights_datasets'
+BQ_TABLE_NAME = 'mats_table'
 
 default_args = {
     "owner": "Mats",
@@ -71,7 +71,6 @@ with DAG(
         bucket=BUCKET_NAME, 
         source_objects=[BLOB_STAGING_PATH],
         destination_project_dataset_table=f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
-        create_disposition="CREATE_IF_NEEDED",
         schema_fields=[
             {'name': 'id', 'type': 'INT64', 'mode': 'REQUIRED'},
             {'name': 'title', 'type': 'STRING', 'mode': 'NULLABLE'},
