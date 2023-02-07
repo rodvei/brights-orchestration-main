@@ -75,8 +75,6 @@ with DAG(
         source_format='csv',
         create_disposition='CREATE_IF_NEEDED',
         write_disposition='WRITE_TRUNCATE',
-        bigquery_conn_id='gcp-conn',
-        google_cloud_storage_conn_id='gcp-conn',
         autodetect=True, # This uses autodetect
         schema_fields=[
             {'name': 'date', 'type': 'STRING', 'mode': 'REQUIRED'},
