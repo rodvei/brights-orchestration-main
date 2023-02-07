@@ -5,7 +5,7 @@ from airflow.operators.python import PythonOperator, GCSToBigQueryOperator
 import os
 from datetime import date
 from google.cloud import storage
-
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 
 
 default_args = {
