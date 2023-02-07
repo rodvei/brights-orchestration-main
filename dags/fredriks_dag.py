@@ -23,7 +23,7 @@ def get_date_fact(**kwargs):
     month = date_string[5:7]
     day = date_string[8:10]
     number = f'{month}/{day}'
-    blob_name = f'{number}_todays_fact.json'
+    blob_name = 'todays_fact.json'
 
     url = f"http://numbersapi.com/{number}/date"
     res = requests.get(url)
@@ -72,7 +72,7 @@ with DAG(
     GCS_factern = GCSToBigQueryOperator(
         task_id='get_date_fact',
         bucket='brights_bucket_1',
-        source_objects=['freddies_date_facts/todays_fact.txt'],
+        source_objects=['freddies_date_facts/todays_fact.json'],
         destination_project_dataset_table='brigths-orchestration.brights-datasets.fredrik_table',
         write_disposition='WRITE_TRUNCATE',
         create_disposition='CREATE_IF_NEEDED',
