@@ -112,7 +112,7 @@ def load_to_csv(joke_quote_list, **kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="dad_kanye_exchange_2",
+    dag_id="dad_kanye_exchange_3",
     description="Dad tells a joke and Kanye answers with a statement that makes sense to him",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
