@@ -7,6 +7,7 @@ import os
 from google.cloud import storage
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 
 apikey = "acf08f2517abc3baa8e1608b66fcb52e"
 
