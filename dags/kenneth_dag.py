@@ -74,3 +74,5 @@ with DAG(
         autodetect=True,
         dag=dag
     )
+
+    data_extraction>>data_load
