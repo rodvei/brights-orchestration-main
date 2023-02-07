@@ -113,22 +113,22 @@ with DAG(
         python_callable = transform_json
     )
 
-    task3_api_media =  GoogleCloudStorageToBigQueryOperator(
-        task_id = 'gcs_to_bq',
-        bucket = bucket_name,
-        source_objects= BLOB_STAGING_OBJECT,
-        destination_project_dataset_table = f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
-        source_format = 'NEWLINE_DELIMITED_JSON',
-        schema_fields = [
-            {'name': 'author', 'type': 'STRING', 'mode': 'NULLABLE'},
-            {'name': 'source', 'type': 'STRING', 'mode': 'NULLABLE'},
-            {'name': 'category', 'type': 'STRING', 'mode': 'NULLABLE'},
-            {'name': 'url', 'type': 'STRING', 'mode': 'NULLABLE'}
-        ],
-        write_disposition='WRITE_TRUNCATE'
-    )
+    # task3_api_media =  GoogleCloudStorageToBigQueryOperator(
+    #     task_id = 'gcs_to_bq',
+    #     bucket = bucket_name,
+    #     source_objects= BLOB_STAGING_OBJECT,
+    #     destination_project_dataset_table = f"{BQ_PROJECT}:{BQ_DATASET_NAME}.{BQ_TABLE_NAME}",
+    #     source_formaqt = 'NEWLINE_DELIMITED_JSON',
+    #     schema_fields = [
+    #         {'name': 'author', 'type': 'STRING', 'mode': 'NULLABLE'},
+    #         {'name': 'source', 'type': 'STRING', 'mode': 'NULLABLE'},
+    #         {'name': 'category', 'type': 'STRING', 'mode': 'NULLABLE'},
+    #         {'name': 'url', 'type': 'STRING', 'mode': 'NULLABLE'}
+    #     ],
+    #     write_disposition='WRITE_TRUNCATE'
+    # )
 
-    task1_api_mediastack >> task2_convert_to_json >> task3_api_media
+    task1_api_mediastack >> task2_convert_to_json 
 
 
     
