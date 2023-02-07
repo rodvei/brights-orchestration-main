@@ -21,8 +21,10 @@ BQ_TABLE_NAME = 'glen_roger_table'
 default_args = {
     "owner": "GlenRoger",
     "retries": 1,
-    "retry_delay": datetime.timedelta(minutes=5),
-    "start_date": datetime.datetime(2022, 8, 21),
+    "retry_delay": timedelta(minutes=5),
+    "start_date": datetime(2022, 8, 21),
+    # "retry_delay": datetime.timedelta(minutes=5),
+    # "start_date": datetime.datetime(2022, 8, 21),
 }
 
 
