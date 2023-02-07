@@ -1,10 +1,11 @@
 import datetime
 import requests
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import PythonOperator, GCSToBigQueryOperator
 import os
 from datetime import date
 from google.cloud import storage
+
 
 
 default_args = {
@@ -59,13 +60,23 @@ with DAG(
     schedule_interval="@daily",
 ) as dag:
 
-    factern = PythonOperator(
-        task_id="bonjour_le_monde", # This controls what your task name is in the airflow UI 
-        python_callable=get_date_fact # This is the function that airflow will run 
-    )
-    printern = PythonOperator(
-        task_id="printern", # This controls what your task name is in the airflow UI 
-        python_callable=print_file # This is the function that airflow will run 
+
+    factern = GCSToBigQueryOperator(
+        task_id='get_date_fact',
+        bucket='brights_bucket_1',
+        source_objects=['todays_fact.txt'],
+        destination_project_dataset_table='brigths-orchestration.preperation_dag.freddies_pool_table',
+        write_disposition='WRITE_TRUNCATE',
+        create_disposition='CREATE_IF_NEEDED'
     )
 
-    factern >> printern
+    # factern = PythonOperator(
+    #     task_id="bonjour_le_monde", # This controls what your task name is in the airflow UI 
+    #     python_callable=get_date_fact # This is the function that airflow will run 
+    # )
+    # printern = PythonOperator(
+    #     task_id="printern", # This controls what your task name is in the airflow UI 
+    #     python_callable=print_file # This is the function that airflow will run 
+    # )
+
+    # factern >> printern
