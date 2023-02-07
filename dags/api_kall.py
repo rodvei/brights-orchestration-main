@@ -18,10 +18,9 @@ default_args = {
 
 def dump_to_blob(API_res, filename, **kwargs):
     dag_date = kwargs['ds']
-    dag_time = datetime.datetime.now()
 
     bucket_name = 'brights_bucket_1'
-    blob_name = f'{filename}_DATE_{dag_date}TIME_{dag_time}.json'
+    blob_name = f'{filename}_{dag_date}.json'
     storage_client = storage.Client()
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(os.path.join('ingrids_folder', blob_name))
@@ -35,7 +34,7 @@ def dump_to_blob(API_res, filename, **kwargs):
     for blob in blobs:
         print(blob.name)
 
-def load_from_blob(blob_name, **kwargs):
+def load_from_blob(blob_name):
     blob_name = blob_name
     bucket_name = 'brights_bucket_1'
     storage_client = storage.Client()
@@ -47,7 +46,7 @@ def load_from_blob(blob_name, **kwargs):
 
     return blob_file
 
-def extract_api(**kwargs):
+def extract(**kwargs):
     # API Inspiration: 
     # https://rapidapi.com/collection/list-of-free-apis
     # https://mixedanalytics.com/blog/list-actually-free-open-no-auth-needed-apis/
@@ -64,13 +63,12 @@ def extract_api(**kwargs):
     API_res_dict['joke_API'] = joke_data
     API_res_dict['quote_API'] = quote_data
 
-    dump_to_blob(API_res_dict, 'API_results', **kwargs)
+    dump_to_blob(API_res_dict, 'API_results')
     
 
 def transform(**kwargs):
     dag_date = kwargs['ds']
-    dag_time = datetime.datetime.now()
-    blob_name = f'API_results_DATE_{dag_date}TIME_{dag_time}.json'
+    blob_name = f'API_results_{dag_date}.json'
 
     API_dict = load_from_blob(blob_name)
     joke_data = API_dict['joke_API']
@@ -83,13 +81,12 @@ def transform(**kwargs):
     elif joke_data['type'] == 'onepart':
         joke_quote_dict['dad_kanye_exchange'] = f"Dad: {joke_data['joke']}. Kanye: {quote_data}"
 
-    dump_to_blob(joke_quote_dict, 'dad_kanye_exchange', **kwargs)
+    dump_to_blob(joke_quote_dict, 'dad_kanye_exchange')
 
 
-def load_to_csv(joke_quote_list, **kwargs):
+def load(**kwargs):
     dag_date = kwargs['ds']
-    dag_time = datetime.datetime.now()
-    blob_name = f'dad_kanye_exchange_DATE_{dag_date}TIME_{dag_time}.csv'
+    blob_name = f'dad_kanye_exchange_{dag_date}.csv'
     dad_kanye_exchange_dict = load_from_blob(blob_name)
     
     headers = ['joke']
@@ -112,7 +109,7 @@ def load_to_csv(joke_quote_list, **kwargs):
         print(blob.name)
 
 with DAG(
-    dag_id="dad_kanye_exchange_3",
+    dag_id="dad_kanye_exchange_4",
     description="Dad tells a joke and Kanye answers with a statement that makes sense to him",
     default_args=default_args,
     schedule_interval="@daily", #None, @hourly, @weekly, @monthly, @yearly,...
@@ -120,7 +117,7 @@ with DAG(
 
     run_python_task_1 = PythonOperator(
         task_id="extract_task", # This controls what your task name is in the airflow UI 
-        python_callable=extract_api # This is the function that airflow will run 
+        python_callable=extract # This is the function that airflow will run 
     )
 
     run_python_task_2 = PythonOperator(
@@ -130,7 +127,7 @@ with DAG(
 
     run_python_task_3 = PythonOperator(
         task_id="load_task", # This controls what your task name is in the airflow UI 
-        python_callable=load_to_csv # This is the function that airflow will run 
+        python_callable=load # This is the function that airflow will run 
     )
 
     run_python_task_1>>run_python_task_2>>run_python_task_3
