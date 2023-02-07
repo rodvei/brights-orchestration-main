@@ -137,7 +137,7 @@ with DAG(
         python_callable=load # This is the function that airflow will run 
     )
 
-    run_GCSToBigQuery_task_1 = GCSToBigQueryOperator(
+    run_GCSToBigQuery_task_2 = GCSToBigQueryOperator(
         task_id="load_csv_gcs_to_bq", # This controls what your task name is in the airflow UI
         bucket=BUCKET_NAME, # This is the function that airflow will run
         source_objects=[BLOB_STAGING_PATH],
@@ -148,4 +148,4 @@ with DAG(
             write_disposition='WRITE_TRUNCATE'
             )
 
-    run_python_task_1>>run_python_task_2>>run_python_task_3>>run_GCSToBigQuery_task_1
+    run_python_task_1>>run_python_task_2>>run_python_task_3>>run_GCSToBigQuery_task_2
